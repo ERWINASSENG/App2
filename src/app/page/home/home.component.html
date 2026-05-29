@@ -1,3 +1,12 @@
-<div class="home">
-  <h1>Welcome</h1>
+<div class="home" *ngIf="isAuthenticated; else redirecting">
+  <h1>Bienvenue</h1>
+  <p>Vous êtes bien connecté. Voici votre page d'accueil.</p>
+  <button class="logout-button" (click)="logout()">Se déconnecter</button>
+  <!-- Ajoutez ici les éléments de la page d'accueil -->
 </div>
+
+<ng-template #redirecting>
+  <div class="home-redirect">
+    <p>Redirection vers la page de connexion...</p>
+  </div>
+</ng-template>

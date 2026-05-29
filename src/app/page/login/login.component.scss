@@ -1,0 +1,129 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f9fafb;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.login-form {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 420px;
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 1.75rem;
+    color: #1f2937;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  .form-group {
+    margin-bottom: 1.25rem;
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #4b5563;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+
+      &:focus {
+        outline: none;
+        border-color: #3ecf8e; /* Couleur verte officielle de Supabase */
+        box-shadow: 0 0 0 3px rgba(62, 207, 142, 0.15);
+      }
+    }
+  }
+
+  button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #3ecf8e;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 0.5rem;
+
+    &:hover {
+      background-color: #2eb87c;
+    }
+
+    &:disabled {
+      background-color: #9ca3af;
+      cursor: not-allowed;
+    }
+  }
+
+  .error-message {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 1rem;
+    text-align: center;
+    background-color: #fef2f2;
+    padding: 0.5rem;
+    border-radius: 4px;
+  }
+
+  .success-message {
+    color: #16a34a;
+    font-size: 0.875rem;
+    margin-top: 1rem;
+    text-align: center;
+    background-color: #f0fdf4;
+    padding: 0.5rem;
+    border-radius: 4px;
+  }
+
+  .separator {
+    border: 0;
+    border-top: 1px solid #e5e7eb;
+    margin: 1.5rem 0;
+  }
+
+  .toggle-links {
+    text-align: center;
+    font-size: 0.875rem;
+    color: #4b5563;
+
+    p {
+      margin: 0.5rem 0;
+    }
+
+    a {
+      color: #3ecf8e;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .forgot-link {
+      color: #6b7280;
+      font-weight: normal;
+      font-size: 0.813rem;
+    }
+  }
+}
