@@ -9,12 +9,7 @@ export class SupabaseService {
   public supabase: SupabaseClient;
 
   constructor() {
-    // Initialisation avec vos clés (idéalement placées dans environment.ts)
-    // Remplacez par vos clés si vous n'utilisez pas de fichier environment
-    const supabaseUrl = 'https://csmmgzyedhqjfwaabjcm.supabase.co';
-    const supabaseKey = 'sb_publishable_U-RodIOCDkK92kLZNUTddA_ICy5NXS5';
-    
-    this.supabase = createClient(supabaseUrl, supabaseKey);
+    this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
   }
 
   // Connexion
