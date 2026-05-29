@@ -1,0 +1,72 @@
+<div class="login-container">
+  <form class="login-form" (ngSubmit)="handleSubmit()">
+    
+    <h2 *ngIf="currentMode === 'login'">Connexion</h2>
+    <h2 *ngIf="currentMode === 'register'">Créer un compte</h2>
+    <h2 *ngIf="currentMode === 'forgot'">Mot de passe oublié</h2>
+
+    <div class="form-group" *ngIf="currentMode === 'register'">
+      <label for="fullName">Nom complet</label>
+      <input 
+        id="fullName" 
+        name="fullName" 
+        type="text" 
+        [(ngModel)]="fullName" 
+        placeholder="Jean Dupont" 
+        required 
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="email">E-mail</label>
+      <input 
+        id="email" 
+        name="email" 
+        type="email" 
+        [(ngModel)]="email" 
+        placeholder="votre@email.com" 
+        required 
+      />
+    </div>
+
+    <div class="form-group" *ngIf="currentMode !== 'forgot'">
+      <label for="password">Mot de passe</label>
+      <input 
+        id="password" 
+        name="password" 
+        type="password" 
+        [(ngModel)]="password" 
+        placeholder="Votre mot de passe" 
+        required 
+      />
+    </div>
+
+    <button type="submit" [disabled]="loading">
+      <span *ngIf="loading">Chargement...</span>
+      <span *ngIf="!loading && currentMode === 'login'">Se connecter</span>
+      <span *ngIf="!loading && currentMode === 'register'">S'inscrire</span>
+      <span *ngIf="!loading && currentMode === 'forgot'">Envoyer le lien</span>
+    </button>
+
+    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+    <p class="success-message" *ngIf="successMessage">{{ successMessage }}</p>
+
+    <hr class="separator" />
+
+    <div class="toggle-links">
+      <ng-container *ngIf="currentMode === 'login'">
+        <p>Pas encore de compte ? <a (click)="switchMode('register')">S'inscrire</a></p>
+        <p><a (click)="switchMode('forgot')" class="forgot-link">Mot de passe oublié ?</a></p>
+      </ng-container>
+
+      <ng-container *ngIf="currentMode === 'register'">
+        <p>Vous avez déjà un compte ? <a (click)="switchMode('login')">Se connecter</a></p>
+      </ng-container>
+
+      <ng-container *ngIf="currentMode === 'forgot'">
+        <p><a (click)="switchMode('login')">Retour à la connexion</a></p>
+      </ng-container>
+    </div>
+
+  </form>
+</div>
