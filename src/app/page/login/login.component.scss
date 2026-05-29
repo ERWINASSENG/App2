@@ -45,7 +45,7 @@
 
       &:focus {
         outline: none;
-        border-color: #3ecf8e; /* Couleur verte officielle de Supabase */
+        border-color: #3ecf8e; 
         box-shadow: 0 0 0 3px rgba(62, 207, 142, 0.15);
       }
     }
@@ -74,24 +74,22 @@
     }
   }
 
-  .error-message {
-    color: #dc2626;
+  .error-message, .success-message {
     font-size: 0.875rem;
     margin-top: 1rem;
     text-align: center;
-    background-color: #fef2f2;
     padding: 0.5rem;
     border-radius: 4px;
   }
 
+  .error-message {
+    color: #dc2626;
+    background-color: #fef2f2;
+  }
+
   .success-message {
     color: #16a34a;
-    font-size: 0.875rem;
-    margin-top: 1rem;
-    text-align: center;
     background-color: #f0fdf4;
-    padding: 0.5rem;
-    border-radius: 4px;
   }
 
   .separator {
@@ -105,9 +103,7 @@
     font-size: 0.875rem;
     color: #4b5563;
 
-    p {
-      margin: 0.5rem 0;
-    }
+    p { margin: 0.5rem 0; }
 
     a {
       color: #3ecf8e;
@@ -115,9 +111,7 @@
       font-weight: 600;
       cursor: pointer;
 
-      &:hover {
-        text-decoration: underline;
-      }
+      &:hover { text-decoration: underline; }
     }
 
     .forgot-link {

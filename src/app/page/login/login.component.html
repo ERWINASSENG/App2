@@ -4,7 +4,19 @@
     <h2 *ngIf="currentMode === 'login'">Connexion</h2>
     <h2 *ngIf="currentMode === 'register'">Créer un compte</h2>
     <h2 *ngIf="currentMode === 'forgot'">Mot de passe oublié</h2>
-    
+
+    <div class="form-group" *ngIf="currentMode === 'register'">
+      <label for="fullName">Nom complet</label>
+      <input 
+        id="fullName" 
+        name="fullName" 
+        type="text" 
+        [(ngModel)]="fullName" 
+        placeholder="Jean Dupont" 
+        required 
+      />
+    </div>
+
     <div class="form-group">
       <label for="email">E-mail</label>
       <input 
@@ -18,15 +30,16 @@
     </div>
 
     <div class="form-group" *ngIf="currentMode !== 'forgot'">
-  <label for="password">Mot de passe</label>
-  <input 
-    id="password" 
-    name="password" 
-    type="password" 
-    [(ngModel)]="password" 
-    placeholder="Votre mot de passe" 
-    required />
-</div>
+      <label for="password">Mot de passe</label>
+      <input 
+        id="password" 
+        name="password" 
+        type="password" 
+        [(ngModel)]="password" 
+        placeholder="Votre mot de passe" 
+        required 
+      />
+    </div>
 
     <button type="submit" [disabled]="loading">
       <span *ngIf="loading">Chargement...</span>
