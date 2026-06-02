@@ -9,7 +9,29 @@ export class SupabaseService {
   public supabase: SupabaseClient;
 
   constructor() {
-    this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
+    const supabaseUrl = environment.supabaseUrl;
+    const supabaseKey = environment.supabaseKey;
+
+    console.log('[SupabaseService] supabaseUrl:', supabaseUrl);
+    console.log('[SupabaseService] supabaseKey present:', Boolean(supabaseKey));
+
+    if (!this.isValidSupabaseUrl(supabaseUrl)) {
+      throw new Error(
+        `[SupabaseService] URL Supabase invalide : ${supabaseUrl}. ` +
+        'Vérifiez src/environnement/environment.ts et vos variables d’environnement.'
+      );
+    }
+
+    this.supabase = createClient(supabaseUrl, supabaseKey);
+  }
+
+  private isValidSupabaseUrl(url: string): boolean {
+    try {
+      const parsed = new URL(url);
+      return parsed.protocol === 'https:' && parsed.hostname.endsWith('.supabase.co');
+    } catch {
+      return false;
+    }
   }
 
   // Connexion
