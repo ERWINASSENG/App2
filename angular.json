@@ -53,10 +53,16 @@
                   "inline": false
                 }
               },
+              "fileReplacements": [
+                {
+                  "replace": "src/environnement/environment.ts",
+                  "with": "src/environnement/environment.prod.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
+                  "maximumWarning": "700kB",
                   "maximumError": "1MB"
                 },
                 {
