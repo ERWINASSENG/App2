@@ -1,6 +1,97 @@
 import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { environment } from '../../environnement/environment.prod'; // Assurez-vous d'avoir ce fichier
+import { environment } from '../../environnement/environment.prod';
+
+// Custom storage to avoid NavigatorLock issues while preferring localStorage
+class SafeStorage implements Storage {
+  private memoryData = new Map<string, string>();
+  private useLocalStorage: boolean;
+
+  constructor() {
+    try {
+      this.useLocalStorage = typeof localStorage !== 'undefined' && localStorage !== null;
+      // Test localStorage availability
+      localStorage.setItem('__test__', '1');
+      localStorage.removeItem('__test__');
+    } catch {
+      this.useLocalStorage = false;
+    }
+  }
+
+  getItem(key: string): string | null {
+    if (this.useLocalStorage) {
+      try {
+        return localStorage.getItem(key);
+      } catch {
+        return this.memoryData.get(key) || null;
+      }
+    }
+    return this.memoryData.get(key) || null;
+  }
+
+  setItem(key: string, value: string): void {
+    if (this.useLocalStorage) {
+      try {
+        localStorage.setItem(key, value);
+        return;
+      } catch {
+        this.memoryData.set(key, value);
+      }
+    } else {
+      this.memoryData.set(key, value);
+    }
+  }
+
+  removeItem(key: string): void {
+    if (this.useLocalStorage) {
+      try {
+        localStorage.removeItem(key);
+        return;
+      } catch {
+        this.memoryData.delete(key);
+      }
+    } else {
+      this.memoryData.delete(key);
+    }
+  }
+
+  clear(): void {
+    if (this.useLocalStorage) {
+      try {
+        localStorage.clear();
+        return;
+      } catch {
+        this.memoryData.clear();
+      }
+    } else {
+      this.memoryData.clear();
+    }
+  }
+
+  key(index: number): string | null {
+    if (this.useLocalStorage) {
+      try {
+        return localStorage.key(index);
+      } catch {
+        const keys = Array.from(this.memoryData.keys());
+        return keys[index] || null;
+      }
+    }
+    const keys = Array.from(this.memoryData.keys());
+    return keys[index] || null;
+  }
+
+  get length(): number {
+    if (this.useLocalStorage) {
+      try {
+        return localStorage.length;
+      } catch {
+        return this.memoryData.size;
+      }
+    }
+    return this.memoryData.size;
+  }
+}
 
 @Injectable({
   providedIn: 'root'
@@ -18,11 +109,18 @@ export class SupabaseService {
     if (!this.isValidSupabaseUrl(supabaseUrl)) {
       throw new Error(
         `[SupabaseService] URL Supabase invalide : ${supabaseUrl}. ` +
-        'Vérifiez src/environnement/environment.ts et vos variables d’environnement.'
+        'Verifiez src/environnement/environment.ts et vos variables d\'environnement.'
       );
     }
 
-    this.supabase = createClient(supabaseUrl, supabaseKey);
+    this.supabase = createClient(supabaseUrl, supabaseKey, {
+      auth: {
+        storage: new SafeStorage(),
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true,
+      },
+    });
   }
 
   private isValidSupabaseUrl(url: string): boolean {
@@ -54,7 +152,7 @@ export class SupabaseService {
     });
   }
 
-  // Mot de passe oublié
+  // Mot de passe oublie
   resetPassword(email: string) {
       const redirectTo = environment.resetPasswordRedirectUrl;
     console.log('[SupabaseService] resetPassword redirectTo:', redirectTo);
