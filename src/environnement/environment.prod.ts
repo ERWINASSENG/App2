@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
   supabaseUrl: 'https://ixnooldvveipysmjtcpj.supabase.co',
-  supabaseKey: 'sb_publishable_-98LnjAparqIXMXoGGLc2Q_tH3yd_vM'
+  supabaseKey: 'sb_publishable_-98LnjAparqIXMXoGGLc2Q_tH3yd_vM',
+  resetPasswordRedirectUrl: 'http://localhost:4200/update-password'
 };

@@ -7,7 +7,10 @@ Ajouter ces variables dans **Vercel Dashboard → Project Settings → Environme
 ```
 VITE_SUPABASE_URL=https://ixnooldvveipysmjtcpj.supabase.co
 VITE_SUPABASE_KEY=sb_publishable_-98LnjAparqIXMXoGGLc2Q_tH3yd_vM
+VITE_RESET_PASSWORD_URL=https://votre-domaine.com/update-password
 ```
+
+> Remplacez `https://votre-domaine.com` par l’URL exacte de production où votre app est déployée.
 
 ### Étapes:
 

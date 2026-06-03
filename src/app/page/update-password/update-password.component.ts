@@ -17,6 +17,7 @@ export class UpdatePasswordComponent implements OnInit {
   loading = false;
   errorMessage = '';
   successMessage = '';
+  linkExpired = false;
 
   constructor(
     private supabaseService: SupabaseService,
@@ -26,7 +27,8 @@ export class UpdatePasswordComponent implements OnInit {
   ngOnInit() {
     const hashFragments = window.location.hash.substring(1);
     if (!hashFragments.includes('access_token')) {
-      this.errorMessage = 'Lien de réinitialisation invalide ou expiré.';
+      this.linkExpired = true;
+      this.errorMessage = 'Ce lien de réinitialisation est invalide ou expiré. Demandez un nouveau lien depuis la page de mot de passe oublié.';
     }
   }
 
