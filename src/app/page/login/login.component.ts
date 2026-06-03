@@ -20,6 +20,7 @@ export class LoginComponent {
   fullName = ''; // Ajouté pour l'inscription
   email = '';
   password = '';
+  showPassword = false;
   
   loading = false;
   errorMessage = '';
@@ -36,6 +37,11 @@ export class LoginComponent {
     this.successMessage = '';
     this.password = ''; 
     this.fullName = ''; 
+    this.showPassword = false;
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
   }
 
   async handleSubmit(): Promise<void> {
