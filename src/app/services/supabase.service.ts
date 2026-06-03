@@ -98,6 +98,7 @@ class SafeStorage implements Storage {
 })
 export class SupabaseService {
   public supabase: SupabaseClient;
+  private lockErrorHandler = this.suppressLockErrors();
 
   constructor() {
     const supabaseUrl = environment.supabaseUrl;
@@ -121,6 +122,21 @@ export class SupabaseService {
         detectSessionInUrl: true,
       },
     });
+
+    this.lockErrorHandler();
+  }
+
+  private suppressLockErrors() {
+    return () => {
+      const originalError = console.error;
+      console.error = (...args: any[]) => {
+        const message = args[0]?.toString?.() || '';
+        if (message.includes('NavigatorLockAcquireTimeoutError') || message.includes('lock:sb-')) {
+          return;
+        }
+        originalError.apply(console, args);
+      };
+    };
   }
 
   private isValidSupabaseUrl(url: string): boolean {
