@@ -57,7 +57,7 @@ export class SupabaseService {
   // Mot de passe oublié
   resetPassword(email: string) {
     return this.supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/update-password`,
+      redirectTo: environment.resetPasswordRedirectUrl,
     });
   }
 }
