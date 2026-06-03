@@ -56,8 +56,15 @@ export class SupabaseService {
 
   // Mot de passe oublié
   resetPassword(email: string) {
+      const redirectTo = environment.resetPasswordRedirectUrl;
+    console.log('[SupabaseService] resetPassword redirectTo:', redirectTo);
+
+    if (!redirectTo) {
+      throw new Error('[SupabaseService] resetPasswordRedirectUrl manquant dans environment.');
+    }
+
     return this.supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: environment.resetPasswordRedirectUrl,
+      redirectTo,
     });
   }
 }
