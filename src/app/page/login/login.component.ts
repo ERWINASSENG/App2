@@ -17,7 +17,7 @@ export class LoginComponent {
   currentMode: AuthMode = 'login';
   
   // Variables du formulaire
-  fullName = ''; // Ajouté pour l'inscription
+  fullName = ''; 
   email = '';
   password = '';
   showPassword = false;
