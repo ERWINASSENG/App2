@@ -13,12 +13,10 @@
 
   @media (max-width: 768px) {
     padding: 1rem;
-    align-items: center;
   }
 
   @media (max-width: 480px) {
     padding: 0;
-    align-items: center;
     min-height: auto;
   }
 }
@@ -59,14 +57,16 @@
   transition: all 0.6s ease-in-out;
 }
 
+/* --- ÉTAT INITIAL / MODE SE CONNECTER --- */
 .sign-in-container {
   left: 0;
   width: 50%;
   z-index: 2;
+  opacity: 1;
+  pointer-events: auto;
 
   @media (max-width: 768px) {
     width: 100%;
-    pointer-events: auto;
   }
 }
 
@@ -75,24 +75,22 @@
   width: 50%;
   opacity: 0;
   z-index: 1;
+  pointer-events: none; /* Empêche de bloquer le formulaire de connexion dessous */
 
   @media (max-width: 768px) {
     width: 100%;
-    pointer-events: none;
-    opacity: 0;
   }
 }
 
-/* Changements d'état appliqués par la classe dynamic right-panel-active */
+/* --- ÉTAT ACTIF / PANNEAU DROIT GLISSÉ (MODE S'INSCRIRE) --- */
 .container.right-panel-active {
   .sign-in-container {
     transform: translateX(100%);
     opacity: 0;
+    pointer-events: none;
 
     @media (max-width: 768px) {
-      transform: none;
-      opacity: 0;
-      pointer-events: none;
+      transform: none; /* Annule la glissière sur mobile */
     }
   }
   
@@ -100,21 +98,16 @@
     transform: translateX(100%);
     opacity: 1;
     z-index: 5;
+    pointer-events: auto;
     animation: show 0.6s;
 
     @media (max-width: 768px) {
-      transform: none;
-      opacity: 1;
-      pointer-events: auto;
+      transform: none; /* Annule la glissière sur mobile */
     }
   }
 
   .overlay-container {
     transform: translateX(-100%);
-
-    @media (max-width: 768px) {
-      display: none;
-    }
   }
 
   .overlay {
@@ -153,20 +146,12 @@
   pointer-events: auto;
 
   @media (max-width: 768px) {
-    padding: 0 25px;
+    padding: 2rem 25px;
     min-height: auto;
-    justify-content: center;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    pointer-events: auto;
   }
 
   @media (max-width: 480px) {
-    padding: 0 20px;
-    padding-top: 0.5rem;
-    padding-bottom: 1rem;
-    justify-content: center;
-    pointer-events: auto;
+    padding: 1.5rem 20px;
   }
 
   h2 {
@@ -226,7 +211,7 @@
 
       @media (max-width: 480px) {
         padding: 0.65rem 2.8rem 0.65rem 0.65rem;
-        font-size: 16px;
+        font-size: 16px; /* Évite le zoom automatique forcé sur iOS Safari */
       }
 
       &:focus {
@@ -390,7 +375,7 @@
   }
 }
 
-/* STYLISATION DU VOLET COULISSANT */
+/* --- VOLET GRAPHIQUE DE COULISSEMENT (DESKTOP) --- */
 .overlay-container {
   position: absolute;
   top: 0;
@@ -402,7 +387,7 @@
   z-index: 100;
 
   @media (max-width: 768px) {
-    display: none;
+    display: none !important; /* Désactivation totale pour laisser place à la navigation mobile */
     pointer-events: none;
   }
 }
@@ -430,10 +415,6 @@
   width: 50%;
   padding: 0 40px;
   transition: transform 0.6s ease-in-out;
-
-  @media (max-width: 768px) {
-    display: none;
-  }
 
   h2 {
     color: white;
