@@ -9,6 +9,18 @@
   min-height: 100vh;
   background-color: #f9fafb;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  pointer-events: auto;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+    align-items: center;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0;
+    align-items: center;
+    min-height: auto;
+  }
 }
 
 .container {
@@ -20,6 +32,24 @@
   width: 850px;
   max-width: 100%;
   min-height: 520px;
+
+  @media (max-width: 1024px) {
+    width: 90%;
+    min-height: 600px;
+  }
+
+  @media (max-width: 768px) {
+    width: 95%;
+    min-height: auto;
+    border-radius: 8px;
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+    min-height: 100vh;
+    border-radius: 0;
+    box-shadow: none;
+  }
 }
 
 .form-container {
@@ -33,6 +63,11 @@
   left: 0;
   width: 50%;
   z-index: 2;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    pointer-events: auto;
+  }
 }
 
 .sign-up-container {
@@ -40,6 +75,12 @@
   width: 50%;
   opacity: 0;
   z-index: 1;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    pointer-events: none;
+    opacity: 0;
+  }
 }
 
 /* Changements d'état appliqués par la classe dynamic right-panel-active */
@@ -47,6 +88,12 @@
   .sign-in-container {
     transform: translateX(100%);
     opacity: 0;
+
+    @media (max-width: 768px) {
+      transform: none;
+      opacity: 0;
+      pointer-events: none;
+    }
   }
   
   .sign-up-container {
@@ -54,10 +101,20 @@
     opacity: 1;
     z-index: 5;
     animation: show 0.6s;
+
+    @media (max-width: 768px) {
+      transform: none;
+      opacity: 1;
+      pointer-events: auto;
+    }
   }
 
   .overlay-container {
     transform: translateX(-100%);
+
+    @media (max-width: 768px) {
+      display: none;
+    }
   }
 
   .overlay {
@@ -93,12 +150,40 @@
   justify-content: center;
   align-items: center;
   text-align: center;
+  pointer-events: auto;
+
+  @media (max-width: 768px) {
+    padding: 0 25px;
+    min-height: auto;
+    justify-content: center;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    pointer-events: auto;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 20px;
+    padding-top: 0.5rem;
+    padding-bottom: 1rem;
+    justify-content: center;
+    pointer-events: auto;
+  }
 
   h2 {
     margin-top: 0;
     margin-bottom: 1.5rem;
     color: #1f2937;
     font-weight: 600;
+
+    @media (max-width: 768px) {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 1.1rem;
+      margin-bottom: 0.8rem;
+    }
   }
 
   .form-group {
@@ -106,12 +191,24 @@
     width: 100%;
     text-align: left;
 
+    @media (max-width: 768px) {
+      margin-bottom: 0.9rem;
+    }
+
+    @media (max-width: 480px) {
+      margin-bottom: 0.8rem;
+    }
+
     label {
       display: block;
       margin-bottom: 0.4rem;
       color: #4b5563;
       font-size: 0.875rem;
       font-weight: 500;
+
+      @media (max-width: 480px) {
+        font-size: 0.8rem;
+      }
     }
 
     .password-input-wrapper {
@@ -126,6 +223,11 @@
       box-sizing: border-box;
       font-size: 1rem;
       transition: border-color 0.2s, box-shadow 0.2s;
+
+      @media (max-width: 480px) {
+        padding: 0.65rem 2.8rem 0.65rem 0.65rem;
+        font-size: 16px;
+      }
 
       &:focus {
         outline: none;
@@ -150,6 +252,12 @@
       cursor: pointer;
       font-size: 1.1rem;
       padding: 0;
+
+      @media (max-width: 480px) {
+        width: 1.8rem;
+        height: 1.8rem;
+        font-size: 1rem;
+      }
 
       &:hover {
         color: #111827;
@@ -194,6 +302,45 @@
       &:hover {
         color: #2eb87c;
         transform: none;
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .mobile-nav {
+    display: none;
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #4b5563;
+    pointer-events: auto;
+    z-index: 1000;
+    position: relative;
+
+    @media (max-width: 768px) {
+      display: block;
+    }
+
+    p {
+      margin: 0;
+      pointer-events: auto;
+    }
+
+    .nav-link {
+      width: auto;
+      background-color: transparent;
+      color: #3ecf8e;
+      padding: 0 0.25rem;
+      border: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      text-decoration: none;
+      margin: 0;
+      pointer-events: auto !important;
+
+      &:hover {
+        color: #2eb87c;
         text-decoration: underline;
       }
     }
@@ -253,6 +400,11 @@
   overflow: hidden;
   transition: transform 0.6s ease-in-out;
   z-index: 100;
+
+  @media (max-width: 768px) {
+    display: none;
+    pointer-events: none;
+  }
 }
 
 .overlay {
@@ -278,6 +430,10 @@
   width: 50%;
   padding: 0 40px;
   transition: transform 0.6s ease-in-out;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 
   h2 {
     color: white;

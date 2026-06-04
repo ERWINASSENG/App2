@@ -63,6 +63,18 @@
 
         <p class="error-message" *ngIf="errorMessage && currentMode === 'register'">{{ errorMessage }}</p>
         <p class="success-message" *ngIf="successMessage && currentMode === 'register'">{{ successMessage }}</p>
+
+        <div class="mobile-nav">
+          <p>Vous avez déjà un compte ? 
+            <button 
+              type="button" 
+              class="nav-link"
+              (click)="switchMode('login')"
+            >
+              Se connecter
+            </button>
+          </p>
+        </div>
       </form>
     </div>
 
@@ -140,6 +152,18 @@
         <p class="success-message" *ngIf="successMessage && currentMode === 'login'">{{ successMessage }}</p>
         <p class="error-message" *ngIf="errorMessage && currentMode === 'forgot'">{{ errorMessage }}</p>
         <p class="success-message" *ngIf="successMessage && currentMode === 'forgot'">{{ successMessage }}</p>
+
+        <div class="mobile-nav" *ngIf="currentMode === 'login'">
+          <p>Pas encore de compte ? 
+            <button 
+              type="button" 
+              class="nav-link"
+              (click)="switchMode('register')"
+            >
+              S'inscrire
+            </button>
+          </p>
+        </div>
       </form>
     </div>
 
