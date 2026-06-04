@@ -83,7 +83,7 @@
           />
         </div>
 
-        <div class="form-group">
+        <div class="form-group" *ngIf="currentMode !== 'forgot'">
           <label for="passwordSignIn">Mot de passe</label>
           <div class="password-input-wrapper">
             <input 
@@ -110,7 +110,7 @@
           </div>
         </div>
 
-        <div style="text-align: right; margin-bottom: 1.5rem; margin-top: -0.5rem;">
+        <div style="text-align: right; margin-bottom: 1.5rem; margin-top: -0.5rem;" *ngIf="currentMode !== 'forgot'">
           <button 
             type="button" 
             class="forgot-password-link"
@@ -122,11 +122,24 @@
 
         <button type="submit" [disabled]="loading">
           <span *ngIf="loading">Chargement...</span>
-          <span *ngIf="!loading">Se connecter</span>
+          <span *ngIf="!loading && currentMode === 'login'">Se connecter</span>
+          <span *ngIf="!loading && currentMode === 'forgot'">Réinitialiser mon mot de passe</span>
         </button>
 
-        <p class="error-message" *ngIf="errorMessage && currentMode !== 'register'">{{ errorMessage }}</p>
-        <p class="success-message" *ngIf="successMessage && currentMode !== 'register'">{{ successMessage }}</p>
+        <div style="text-align: center; margin-top: 1rem;" *ngIf="currentMode === 'forgot'">
+          <button 
+            type="button" 
+            class="forgot-password-link"
+            (click)="switchMode('login')"
+          >
+            ← Retour à la connexion
+          </button>
+        </div>
+
+        <p class="error-message" *ngIf="errorMessage && currentMode === 'login'">{{ errorMessage }}</p>
+        <p class="success-message" *ngIf="successMessage && currentMode === 'login'">{{ successMessage }}</p>
+        <p class="error-message" *ngIf="errorMessage && currentMode === 'forgot'">{{ errorMessage }}</p>
+        <p class="success-message" *ngIf="successMessage && currentMode === 'forgot'">{{ successMessage }}</p>
       </form>
     </div>
 
