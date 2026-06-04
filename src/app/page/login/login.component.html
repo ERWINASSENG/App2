@@ -1,87 +1,165 @@
-<div class="login-container">
-  <form class="login-form" (ngSubmit)="handleSubmit()">
+<div class="login-wrapper">
+  <div class="container" [class.right-panel-active]="currentMode === 'register'" id="container">
     
-    <h2 *ngIf="currentMode === 'login'">Connexion</h2>
-    <h2 *ngIf="currentMode === 'register'">Créer un compte</h2>
-    <h2 *ngIf="currentMode === 'forgot'">Mot de passe oublié</h2>
+    <div class="form-container sign-up-container">
+      <form class="login-form" (ngSubmit)="handleSubmit()">
+        <h2 *ngIf="currentMode === 'register'">ajoute compte</h2>
 
-    <div class="form-group" *ngIf="currentMode === 'register'">
-      <label for="fullName">Nom complet</label>
-      <input 
-        id="fullName" 
-        name="fullName" 
-        type="text" 
-        [(ngModel)]="fullName" 
-        placeholder="Jean Dupont" 
-        required 
-      />
-    </div>
+        <div class="form-group">
+          <label for="fullName">Nom complet</label>
+          <input 
+            id="fullName" 
+            name="fullName" 
+            type="text" 
+            [(ngModel)]="fullName" 
+            placeholder="Jean Dupont" 
+            [required]="currentMode === 'register'" 
+          />
+        </div>
 
-    <div class="form-group">
-      <label for="email">E-mail</label>
-      <input 
-        id="email" 
-        name="email" 
-        type="email" 
-        [(ngModel)]="email" 
-        placeholder="votre@email.com" 
-        required 
-      />
-    </div>
+        <div class="form-group">
+          <label for="emailSignUp">E-mail</label>
+          <input 
+            id="emailSignUp" 
+            name="email" 
+            type="email" 
+            [(ngModel)]="email" 
+            placeholder="votre@email.com" 
+            required 
+          />
+        </div>
 
-    <div class="form-group" *ngIf="currentMode !== 'forgot'">
-      <label for="password">Mot de passe</label>
-      <div class="password-input-wrapper">
-        <input 
-          id="password" 
-          name="password" 
-          [type]="showPassword ? 'text' : 'password'" 
-          [(ngModel)]="password" 
-          placeholder="Votre mot de passe" 
-          required 
-        />
-        <button
-          type="button"
-          class="password-toggle"
-          (click)="togglePasswordVisibility()"
-          [attr.aria-label]="showPassword ? 'Cacher le mot de passe' : 'Voir le mot de passe'"
-        >
-          <svg *ngIf="!showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 5C7 5 2.73 8.11 1 12C2.73 15.89 7 19 12 19C17 19 21.27 15.89 23 12C21.27 8.11 17 5 12 5ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z" fill="currentColor"/>
-          </svg>
-          <svg *ngIf="showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 5C7 5 2.73 8.11 1 12C1.89 13.69 3.12 15.18 4.64 16.24L3 18.88L4.41 20.29L20.29 4.41L18.88 3L16.24 4.64C15.18 3.12 13.69 1.89 12 1C7 1 2.73 4.11 1 8C2.33 10.05 4.24 11.75 6.5 12.61L5.08 14.03C3.19 12.85 1.69 11.25 0.75 9.38C2.56 6.62 6.06 4.5 12 4.5C17.94 4.5 21.44 6.62 23.25 9.38C22.31 11.25 20.81 12.85 18.92 14.03L17.5 12.61C19.76 11.75 21.67 10.05 23 8C21.27 4.11 17 1 12 1Z" fill="currentColor"/>
-          </svg>
+        <div class="form-group">
+          <label for="passwordSignUp">Mot de passe</label>
+          <div class="password-input-wrapper">
+            <input 
+              id="passwordSignUp" 
+              name="password" 
+              [type]="showPassword ? 'text' : 'password'" 
+              [(ngModel)]="password" 
+              placeholder="Votre mot de passe" 
+              [required]="currentMode === 'register'" 
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="togglePasswordVisibility()"
+              [attr.aria-label]="showPassword ? 'Cacher le mot de passe' : 'Voir le mot de passe'"
+            >
+              <svg *ngIf="!showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 5C7 5 2.73 8.11 1 12C2.73 15.89 7 19 12 19C17 19 21.27 15.89 23 12C21.27 8.11 17 5 12 5ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z" fill="currentColor"/>
+              </svg>
+              <svg *ngIf="showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 5C7 5 2.73 8.11 1 12C1.89 13.69 3.12 15.18 4.64 16.24L3 18.88L4.41 20.29L20.29 4.41L18.88 3L16.24 4.64C15.18 3.12 13.69 1.89 12 1C7 1 2.73 4.11 1 8C2.33 10.05 4.24 11.75 6.5 12.61L5.08 14.03C3.19 12.85 1.69 11.25 0.75 9.38C2.56 6.62 6.06 4.5 12 4.5C17.94 4.5 21.44 6.62 23.25 9.38C22.31 11.25 20.81 12.85 18.92 14.03L17.5 12.61C19.76 11.75 21.67 10.05 23 8C21.27 4.11 17 1 12 1Z" fill="currentColor"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" [disabled]="loading">
+          <span *ngIf="loading">Chargement...</span>
+          <span *ngIf="!loading">S'inscrire</span>
         </button>
+
+        <p class="error-message" *ngIf="errorMessage && currentMode === 'register'">{{ errorMessage }}</p>
+        <p class="success-message" *ngIf="successMessage && currentMode === 'register'">{{ successMessage }}</p>
+      </form>
+    </div>
+
+    <div class="form-container sign-in-container">
+      <form class="login-form" (ngSubmit)="handleSubmit()">
+        <h2>Connexion</h2>
+        <h2 *ngIf="currentMode === 'forgot'">Mot de passe oublié</h2>
+
+        <div class="form-group">
+          <label for="emailSignIn">E-mail</label>
+          <input 
+            id="emailSignIn" 
+            name="email" 
+            type="email" 
+            [(ngModel)]="email" 
+            placeholder="votre@email.com" 
+            required 
+          />
+        </div>
+
+        <div class="form-group" *ngIf="currentMode !== 'forgot'">
+          <label for="passwordSignIn">Mot de passe</label>
+          <div class="password-input-wrapper">
+            <input 
+              id="passwordSignIn" 
+              name="password" 
+              [type]="showPassword ? 'text' : 'password'" 
+              [(ngModel)]="password" 
+              placeholder="Votre mot de passe" 
+              required 
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="togglePasswordVisibility()"
+              [attr.aria-label]="showPassword ? 'Cacher le mot de passe' : 'Voir le mot de passe'"
+            >
+              <svg *ngIf="!showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 5C7 5 2.73 8.11 1 12C2.73 15.89 7 19 12 19C17 19 21.27 15.89 23 12C21.27 8.11 17 5 12 5ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z" fill="currentColor"/>
+              </svg>
+              <svg *ngIf="showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 5C7 5 2.73 8.11 1 12C1.89 13.69 3.12 15.18 4.64 16.24L3 18.88L4.41 20.29L20.29 4.41L18.88 3L16.24 4.64C15.18 3.12 13.69 1.89 12 1C7 1 2.73 4.11 1 8C2.33 10.05 4.24 11.75 6.5 12.61L5.08 14.03C3.19 12.85 1.69 11.25 0.75 9.38C2.56 6.62 6.06 4.5 12 4.5C17.94 4.5 21.44 6.62 23.25 9.38C22.31 11.25 20.81 12.85 18.92 14.03L17.5 12.61C19.76 11.75 21.67 10.05 23 8C21.27 4.11 17 1 12 1Z" fill="currentColor"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div style="text-align: right; margin-bottom: 1.5rem; margin-top: -0.5rem;" *ngIf="currentMode !== 'forgot'">
+          <button 
+            type="button" 
+            class="forgot-password-link"
+            (click)="switchMode('forgot')"
+          >
+            Mot de passe oublié ?
+          </button>
+        </div>
+
+        <button type="submit" [disabled]="loading">
+          <span *ngIf="loading">Chargement...</span>
+          <span *ngIf="!loading && currentMode === 'login'">Se connecter</span>
+          <span *ngIf="!loading && currentMode === 'forgot'">Réinitialiser mon mot de passe</span>
+        </button>
+
+        <div style="text-align: center; margin-top: 1rem;" *ngIf="currentMode === 'forgot'">
+          <button 
+            type="button" 
+            class="forgot-password-link"
+            (click)="switchMode('login')"
+          >
+            ← Retour à la connexion
+          </button>
+        </div>
+
+        <p class="error-message" *ngIf="errorMessage && currentMode === 'login'">{{ errorMessage }}</p>
+        <p class="success-message" *ngIf="successMessage && currentMode === 'login'">{{ successMessage }}</p>
+        <p class="error-message" *ngIf="errorMessage && currentMode === 'forgot'">{{ errorMessage }}</p>
+        <p class="success-message" *ngIf="successMessage && currentMode === 'forgot'">{{ successMessage }}</p>
+      </form>
+    </div>
+
+    <div class="overlay-container">
+      <div class="overlay">
+        
+        <div class="overlay-panel overlay-left">
+          <h2>Vous avez déjà un compte ?</h2>
+          <p>Pour rester connecté avec nous, veuillez vous connecter avec vos identifiants.</p>
+          <button class="ghost" id="signIn" (click)="switchMode('login')">Se connecter</button>
+        </div>
+
+        <div class="overlay-panel overlay-right">
+          <h2>Pas encore de compte ?</h2>
+          <p>Inscrivez-vous dès maintenant et commencez votre aventure avec nous.</p>
+          <button class="ghost" id="signUp" (click)="switchMode('register')">S'inscrire</button>
+        </div>
+
       </div>
     </div>
 
-    <button type="submit" [disabled]="loading">
-      <span *ngIf="loading">Chargement...</span>
-      <span *ngIf="!loading && currentMode === 'login'">Se connecter</span>
-      <span *ngIf="!loading && currentMode === 'register'">S'inscrire</span>
-      <span *ngIf="!loading && currentMode === 'forgot'">Envoyer le lien</span>
-    </button>
-
-    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
-    <p class="success-message" *ngIf="successMessage">{{ successMessage }}</p>
-
-    <hr class="separator" />
-
-    <div class="toggle-links">
-      <ng-container *ngIf="currentMode === 'login'">
-        <p>Pas encore de compte ? <a (click)="switchMode('register')">S'inscrire</a></p>
-        <p><a (click)="switchMode('forgot')" class="forgot-link">Mot de passe oublié ?</a></p>
-      </ng-container>
-
-      <ng-container *ngIf="currentMode === 'register'">
-        <p>Vous avez déjà un compte ? <a (click)="switchMode('login')">Se connecter</a></p>
-      </ng-container>
-
-      <ng-container *ngIf="currentMode === 'forgot'">
-        <p><a (click)="switchMode('login')">Retour à la connexion</a></p>
-      </ng-container>
-    </div>
-
-  </form>
+  </div>
 </div>
