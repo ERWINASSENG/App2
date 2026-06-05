@@ -101,8 +101,8 @@ export class SupabaseService {
   private lockErrorHandler = this.suppressLockErrors();
 
   constructor() {
-    const supabaseUrl = environment.supabase.url;
-    const supabaseKey = environment.supabase.anonKey;
+    const supabaseUrl = environment.supabaseUrl;
+    const supabaseKey = environment.supabaseKey;
 
     console.log('[SupabaseService] supabaseUrl:', supabaseUrl);
     console.log('[SupabaseService] supabaseKey present:', Boolean(supabaseKey));
@@ -204,7 +204,7 @@ export class SupabaseService {
 
   // Mot de passe oublie
   resetPassword(email: string) {
-    const redirectTo = window.location.origin + '/reset-password';
+    const redirectTo = environment.resetPasswordRedirectUrl;
     console.log('[SupabaseService] resetPassword redirectTo:', redirectTo);
 
     return this.supabase.auth.resetPasswordForEmail(email, {

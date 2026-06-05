@@ -1,7 +1,6 @@
 export const environment = {
   production: true,
-  supabase: {
-    url: 'https://ixnooldvveipysmjtcpj.supabase.co',
-    anonKey: 'sb_publishable_-98LnjAparqIXMXoGGLc2Q_tH3yd_vM'
-  }
+  supabaseUrl: 'https://ixnooldvveipysmjtcpj.supabase.co',
+  supabaseKey: 'sb_publishable_-98LnjAparqIXMXoGGLc2Q_tH3yd_vM',
+  resetPasswordRedirectUrl: 'https://hopesolution.vercel.app/update-password'
 };
