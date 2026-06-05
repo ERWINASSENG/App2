@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { environment } from '../../environnement/environment.prod';
+import { environment } from '../../environments/environment';
 
 // Custom storage to avoid NavigatorLock issues while preferring localStorage
 class SafeStorage implements Storage {
@@ -101,8 +101,8 @@ export class SupabaseService {
   private lockErrorHandler = this.suppressLockErrors();
 
   constructor() {
-    const supabaseUrl = environment.supabaseUrl;
-    const supabaseKey = environment.supabaseKey;
+    const supabaseUrl = environment.supabase.url;
+    const supabaseKey = environment.supabase.anonKey;
 
     console.log('[SupabaseService] supabaseUrl:', supabaseUrl);
     console.log('[SupabaseService] supabaseKey present:', Boolean(supabaseKey));
@@ -148,14 +148,18 @@ export class SupabaseService {
     }
   }
 
+  getClient(): SupabaseClient {
+    return this.supabase;
+  }
+
   // Connexion
   signIn(email: string, password: string) {
     return this.supabase.auth.signInWithPassword({ email, password });
   }
 
   // Inscription avec Nom Complet
-  signUp(email: string, password: string, fullName: string) {
-    return this.supabase.auth.signUp({
+  async signUp(email: string, password: string, fullName: string) {
+    const result = await this.supabase.auth.signUp({
       email,
       password,
       options: {
@@ -166,19 +170,118 @@ export class SupabaseService {
         }
       }
     });
+
+    // Create user profile if signup succeeded
+    if (result.data?.user) {
+      const [nom, prenom] = this.parseFullName(fullName);
+      const userProfile = {
+        id: result.data.user.id,
+        email: result.data.user.email,
+        nom: nom,
+        prenom: prenom,
+        role: 'saisisseur',
+        actif: true,
+        date_creation: new Date().toISOString()
+      };
+
+      try {
+        await this.supabase.from('users').insert([userProfile]);
+      } catch (error) {
+        console.error('[SupabaseService] Error creating user profile:', error);
+        // Don't throw - auth user is already created
+      }
+    }
+
+    return result;
+  }
+
+  private parseFullName(fullName: string): [string, string] {
+    const parts = fullName.trim().split(/\s+/);
+    if (parts.length === 0) return ['', ''];
+    if (parts.length === 1) return [parts[0], ''];
+    return [parts[0], parts.slice(1).join(' ')];
   }
 
   // Mot de passe oublie
   resetPassword(email: string) {
-      const redirectTo = environment.resetPasswordRedirectUrl;
+    const redirectTo = window.location.origin + '/reset-password';
     console.log('[SupabaseService] resetPassword redirectTo:', redirectTo);
-
-    if (!redirectTo) {
-      throw new Error('[SupabaseService] resetPasswordRedirectUrl manquant dans environment.');
-    }
 
     return this.supabase.auth.resetPasswordForEmail(email, {
       redirectTo,
     });
+  }
+
+  // Récupérer les opérations depuis la base de données
+  async getOperations() {
+    const { data, error } = await this.supabase
+      .from('operations')
+      .select('*')
+      .order('date', { ascending: false });
+
+    if (error) {
+      console.error('[SupabaseService] Erreur lors de la récupération des opérations:', error);
+      throw error;
+    }
+
+    return data || [];
+  }
+
+  // Récupérer les silos depuis la base de données
+  async getSilos() {
+    const { data, error } = await this.supabase
+      .from('silos')
+      .select('*');
+
+    if (error) {
+      console.error('[SupabaseService] Erreur lors de la récupération des silos:', error);
+      throw error;
+    }
+
+    return data || [];
+  }
+
+  // Ajouter une opération
+  async addOperation(operation: any) {
+    const { data, error } = await this.supabase
+      .from('operations')
+      .insert([operation]);
+
+    if (error) {
+      console.error('[SupabaseService] Erreur lors de l\'ajout d\'une opération:', error);
+      throw error;
+    }
+
+    return data;
+  }
+
+  // Mettre à jour une opération
+  async updateOperation(id: string, operation: any) {
+    const { data, error } = await this.supabase
+      .from('operations')
+      .update(operation)
+      .eq('id', id);
+
+    if (error) {
+      console.error('[SupabaseService] Erreur lors de la mise à jour d\'une opération:', error);
+      throw error;
+    }
+
+    return data;
+  }
+
+  // Mettre à jour un silo
+  async updateSilo(id: string, silo: any) {
+    const { data, error } = await this.supabase
+      .from('silos')
+      .update(silo)
+      .eq('id', id);
+
+    if (error) {
+      console.error('[SupabaseService] Erreur lors de la mise à jour d\'un silo:', error);
+      throw error;
+    }
+
+    return data;
   }
 }
