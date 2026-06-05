@@ -1,0 +1,83 @@
+<nav class="bg-gray-900 text-white h-screen fixed left-0 top-0 w-64 flex flex-col shadow-lg" [class.hidden]="!sidebarOpen && window.innerWidth < 1024">
+  <!-- Logo/Header -->
+  <div class="p-6 border-b border-gray-800">
+    <h1 class="text-xl font-bold flex items-center">
+      <span class="mr-2">🏭</span>
+      AFISA Ops
+    </h1>
+    <p class="text-xs text-gray-400 mt-1">Gestion d'opérations portuaires</p>
+  </div>
+
+  <!-- User Profile -->
+  <div class="px-6 py-4 border-b border-gray-800">
+    <div class="flex items-center">
+      <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mr-3">
+        <span class="text-white font-bold">{{ getUserInitials() }}</span>
+      </div>
+      <div class="flex-1">
+        <p class="text-sm font-semibold">{{ currentUser?.prenom }} {{ currentUser?.nom }}</p>
+        <p class="text-xs text-gray-400">{{ getRoleLabel() }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Items -->
+  <div class="flex-1 overflow-y-auto py-4">
+    <div class="px-4 mb-6">
+      <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Modules</h3>
+      <ul class="space-y-2">
+        <li *ngFor="let item of navItems" [style.display]="isNavItemVisible(item) ? 'block' : 'none'">
+          <a 
+            [routerLink]="item.path"
+            routerLinkActive="bg-blue-600"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="flex items-center px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors text-sm">
+            <span class="mr-2">{{ item.icon }}</span>
+            {{ item.label }}
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Admin Section -->
+    <div *ngIf="currentUser?.role === 'admin'" class="px-4">
+      <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Administration</h3>
+      <ul class="space-y-2">
+        <li *ngFor="let item of adminItems" [style.display]="isNavItemVisible(item) ? 'block' : 'none'">
+          <a 
+            [routerLink]="item.path"
+            routerLinkActive="bg-blue-600"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="flex items-center px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors text-sm">
+            <span class="mr-2">{{ item.icon }}</span>
+            {{ item.label }}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="p-4 border-t border-gray-800">
+    <button 
+      (click)="logout()"
+      class="w-full flex items-center justify-center px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors text-sm font-medium">
+      <span class="mr-2">↪️</span>
+      Déconnexion
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Toggle Button -->
+<button 
+  (click)="toggleSidebar()"
+  class="md:hidden fixed bottom-4 right-4 z-50 bg-gray-900 text-white p-3 rounded-full shadow-lg">
+  ☰
+</button>
+
+<!-- Overlay for mobile -->
+<div 
+  *ngIf="sidebarOpen && window.innerWidth < 1024"
+  (click)="toggleSidebar()"
+  class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden">
+</div>

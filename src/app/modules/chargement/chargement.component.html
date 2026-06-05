@@ -1,0 +1,258 @@
+<div class="container mx-auto p-4">
+  <!-- En-tête -->
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-800">Chargement & Déchargement</h1>
+    <button 
+      (click)="toggleForm()" 
+      class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+      {{ showForm ? 'Annuler' : '+ Nouvelle opération' }}
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div *ngIf="successMessage" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+    {{ successMessage }}
+  </div>
+  <div *ngIf="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+    {{ error }}
+  </div>
+
+  <!-- Formulaire de saisie -->
+  <div *ngIf="showForm" class="bg-white rounded-lg shadow-md p-6 mb-6">
+    <h2 class="text-xl font-bold mb-4">{{ editingId ? 'Modifier' : 'Nouvelle' }} opération</h2>
+    <form [formGroup]="operationForm" (ngSubmit)="submitForm()">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Date *</label>
+          <input 
+            type="date" 
+            formControlName="date"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Site *</label>
+          <select 
+            formControlName="site_id"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md">
+            <option value="">Sélectionner un site</option>
+            <option *ngFor="let site of sites" [value]="site.id">{{ site.nom }}</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Type d'opération *</label>
+          <select 
+            formControlName="type_op"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md">
+            <option value="chargement">Chargement</option>
+            <option value="dechargement">Déchargement</option>
+            <option value="transfert">Transfert</option>
+            <option value="surmontage">Surmontage</option>
+            <option value="wagon">Wagon</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Produit *</label>
+          <select 
+            formControlName="produit_id"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md">
+            <option value="">Sélectionner un produit</option>
+            <option *ngFor="let produit of produits" [value]="produit.id">
+              {{ produit.code }} - {{ produit.designation }}
+            </option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Véhicule</label>
+          <select 
+            formControlName="vehicule_id"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md">
+            <option value="">Pas de véhicule</option>
+            <option *ngFor="let vehicule of vehicules" [value]="vehicule.id">
+              {{ vehicule.immatriculation }} ({{ vehicule.type }})
+            </option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Quantité *</label>
+          <input 
+            type="number" 
+            step="0.01"
+            formControlName="qte"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md"
+            placeholder="0.00">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Prix Unitaire (FCFA) *</label>
+          <input 
+            type="number" 
+            step="0.01"
+            formControlName="pu"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md"
+            placeholder="0.00">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Montant (FCFA)</label>
+          <input 
+            type="number" 
+            [value]="montantCalcule"
+            disabled
+            class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Destination</label>
+          <input 
+            type="text" 
+            formControlName="destination"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md"
+            placeholder="ex: Silo 1, Port, etc.">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Provenance</label>
+          <input 
+            type="text" 
+            formControlName="provenance"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md"
+            placeholder="ex: Silo 2, Port, etc.">
+        </div>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+        <textarea 
+          formControlName="notes"
+          rows="3"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md"></textarea>
+      </div>
+      <div class="flex gap-2">
+        <button 
+          type="submit" 
+          [disabled]="loading"
+          class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded disabled:opacity-50">
+          {{ loading ? 'Enregistrement...' : 'Enregistrer' }}
+        </button>
+        <button 
+          type="button" 
+          (click)="cancelEdit()"
+          class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">
+          Annuler
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Filtres -->
+  <div class="bg-white rounded-lg shadow-md p-4 mb-6">
+    <h3 class="font-bold mb-3">Filtres</h3>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Site</label>
+        <select 
+          [(ngModel)]="selectedSite"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md">
+          <option value="">Tous les sites</option>
+          <option *ngFor="let site of sites" [value]="site.id">{{ site.nom }}</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Du</label>
+        <input 
+          type="date" 
+          [(ngModel)]="selectedDateDebut"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Au</label>
+        <input 
+          type="date" 
+          [(ngModel)]="selectedDateFin"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md">
+      </div>
+      <div class="flex gap-2 items-end">
+        <button 
+          (click)="applyFilters()"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex-1">
+          Filtrer
+        </button>
+        <button 
+          (click)="clearFilters()"
+          class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded">
+          Réinitialiser
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tableau des opérations -->
+  <div class="bg-white rounded-lg shadow-md overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gray-100 border-b">
+          <tr>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Date</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Site</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Type</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Véhicule</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Produit</th>
+            <th class="px-4 py-2 text-right text-sm font-semibold text-gray-700">Qté</th>
+            <th class="px-4 py-2 text-right text-sm font-semibold text-gray-700">PU</th>
+            <th class="px-4 py-2 text-right text-sm font-semibold text-gray-700">Montant</th>
+            <th class="px-4 py-2 text-center text-sm font-semibold text-gray-700">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let op of getPaginatedOperations()" class="border-b hover:bg-gray-50">
+            <td class="px-4 py-2 text-sm">{{ op.date | date: 'dd/MM/yyyy' }}</td>
+            <td class="px-4 py-2 text-sm">{{ getSiteName(op.site_id) }}</td>
+            <td class="px-4 py-2 text-sm">
+              <span class="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-semibold">
+                {{ op.type_op }}
+              </span>
+            </td>
+            <td class="px-4 py-2 text-sm">{{ getVehiculeName(op.vehicule_id) }}</td>
+            <td class="px-4 py-2 text-sm">{{ getProduitName(op.produit_id) }}</td>
+            <td class="px-4 py-2 text-sm text-right">{{ op.qte }}</td>
+            <td class="px-4 py-2 text-sm text-right">{{ op.pu | number:'1.0-0' }}</td>
+            <td class="px-4 py-2 text-sm text-right font-semibold">{{ op.montant | number:'1.0-0' }}</td>
+            <td class="px-4 py-2 text-center">
+              <button 
+                (click)="editOperation(op)"
+                class="text-blue-600 hover:text-blue-800 mr-2 text-sm">
+                Modifier
+              </button>
+              <button 
+                (click)="deleteOperation(op.id)"
+                class="text-red-600 hover:text-red-800 text-sm">
+                Supprimer
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="operations.length === 0">
+            <td colspan="9" class="px-4 py-4 text-center text-gray-500">
+              Aucune opération trouvée
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="totalPages > 1" class="bg-gray-50 px-4 py-3 flex justify-between items-center border-t">
+      <div class="text-sm text-gray-600">
+        Page {{ currentPage }} sur {{ totalPages }} ({{ totalOperations }} opérations)
+      </div>
+      <div class="flex gap-2">
+        <button 
+          (click)="previousPage()" 
+          [disabled]="currentPage === 1"
+          class="px-3 py-1 bg-gray-300 text-gray-700 rounded disabled:opacity-50">
+          ← Précédent
+        </button>
+        <button 
+          (click)="nextPage()" 
+          [disabled]="currentPage === totalPages"
+          class="px-3 py-1 bg-gray-300 text-gray-700 rounded disabled:opacity-50">
+          Suivant →
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
