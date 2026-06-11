@@ -1,0 +1,38 @@
+﻿<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-brand">AFISA</div>
+    <div class="sidebar-tag">Portuaire</div>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <nav class="nav-section">
+    <ul class="nav-list">
+      <ng-container *ngFor="let item of navItems">
+        <li class="nav-item" *ngIf="!item.adminOnly || isAdmin">
+          <a
+            [routerLink]="item.path"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="nav-link"
+            >
+            {{ item.label }}
+          </a>
+        </li>
+      </ng-container>
+    </ul>
+  </nav>
+
+  <div class="logout-wrapper" *ngIf="currentUser">
+    <button class="logout-button" type="button" (click)="logout()">
+      <span class="logout-button__user">
+        <span class="logout-button__avatar">{{ avatarLabel }}</span>
+        <span class="logout-button__meta">
+          <span class="logout-button__email">{{ currentUser.email }}</span>
+          <span class="logout-button__action">Déconnexion</span>
+        </span>
+      </span>
+      <span class="logout-button__arrow">›</span>
+    </button>
+  </div>
+</aside>
