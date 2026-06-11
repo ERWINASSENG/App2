@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { environment } from '../../environments/environment';
+import { environment } from '../../environments/environment.prod';
 
 // Custom storage to avoid NavigatorLock issues while preferring localStorage
 class SafeStorage implements Storage {
@@ -155,6 +155,10 @@ export class SupabaseService {
   // Connexion
   signIn(email: string, password: string) {
     return this.supabase.auth.signInWithPassword({ email, password });
+  }
+
+  signOut() {
+    return this.supabase.auth.signOut();
   }
 
   // Inscription avec Nom Complet

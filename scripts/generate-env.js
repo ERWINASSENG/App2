@@ -13,6 +13,6 @@ const content = `export const environment = {
 };
 `;
 
-const outputPath = path.resolve(__dirname, '../src/environnement/environment.prod.ts');
+const outputPath = path.resolve(__dirname, '../src/environments/environment.prod.ts');
 fs.writeFileSync(outputPath, content, 'utf8');
 console.log(`Generated ${outputPath}`);

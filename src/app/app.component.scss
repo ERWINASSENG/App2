@@ -2,21 +2,25 @@
   display: flex;
   height: 100vh;
   background-color: #f3f4f6;
+  position: relative;
 }
 
 main {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
+  width: 100%;
 }
 
 main.with-sidebar {
-  margin-left: 256px; /* width of sidebar (w-64 = 256px) */
+  margin-left: 256px;
+  width: calc(100% - 256px);
 }
 
 @media (max-width: 1024px) {
   main.with-sidebar {
     margin-left: 0;
+    width: 100%;
   }
 }
 

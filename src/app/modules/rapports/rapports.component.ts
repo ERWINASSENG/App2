@@ -1,22 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-rapports',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
-  templateUrl: './rapports.component.html',
-  styleUrls: ['./rapports.component.scss']
+  template: '<div></div>'
 })
-export class RapportsComponent implements OnInit {
-  loading = false;
+export class RapportsComponent {}
 
-  ngOnInit(): void {}
-
-  async generateRapport(type: string): Promise<void> {
-    this.loading = true;
-    // TODO: Implémenter la génération de rapports
-    setTimeout(() => this.loading = false, 2000);
-  }
-}
