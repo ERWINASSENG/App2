@@ -1,0 +1,40 @@
+﻿.module-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: #f3f4f6;
+}
+
+.module-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 3rem 2rem;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  text-align: center;
+}
+
+.module-placeholder .icon {
+  font-size: 3rem;
+  opacity: 0.6;
+}
+
+.module-placeholder h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.module-placeholder p {
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}

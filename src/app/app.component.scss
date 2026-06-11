@@ -1,0 +1,43 @@
+.app-container {
+  display: flex;
+  height: 100vh;
+  background-color: #f3f4f6;
+  position: relative;
+}
+
+main {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+main.with-sidebar {
+  margin-left: 270px;
+  width: calc(100% - 270px);
+}
+
+@media (max-width: 1024px) {
+  main.with-sidebar {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+/* Scrollbar styling */
+main::-webkit-scrollbar {
+  width: 8px;
+}
+
+main::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+main::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+main::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

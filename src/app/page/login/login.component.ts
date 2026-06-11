@@ -62,13 +62,16 @@ export class LoginComponent {
 
         localStorage.setItem('isAuthenticated', 'true');
         this.successMessage = 'Connexion réussie !';
-        this.router.navigate(['/home']);
+        this.router.navigate(['/dashboard']);
 
       } else if (this.currentMode === 'register') {
         const { error } = await this.supabaseService.signUp(this.email, this.password, this.fullName);
         if (error) throw error;
 
-        this.successMessage = "Inscription réussie ! Vérifiez votre boîte e-mail pour confirmer votre compte.";
+        this.successMessage = "Inscription réussie ! Vous pouvez maintenant vous connecter avec vos identifiants.";
+        this.switchMode('login');
+        this.email = '';
+        this.password = '';
 
       } else if (this.currentMode === 'forgot') {
         const { error } = await this.supabaseService.resetPassword(this.email);
