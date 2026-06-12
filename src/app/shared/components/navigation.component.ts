@@ -21,6 +21,7 @@ interface NavItem {
 export class NavigationComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
   isAdmin = false;
+  menuOpen = false;
   private authSub: Subscription | null = null;
 
   get avatarLabel(): string {
@@ -34,12 +35,12 @@ export class NavigationComponent implements OnInit, OnDestroy {
   }
 
   navItems: NavItem[] = [
-    { label: 'Dashboard', path: '/dashboard' },
+    { label: 'Dashboard', path: '/dashboard', adminOnly: true },
     { label: 'Chargement', path: '/chargement' },
     { label: 'Transferts', path: '/transferts' },
-    { label: 'Paie', path: '/paie' },
+    { label: 'Paie', path: '/paie' , adminOnly: true },
     { label: 'Facturation', path: '/facturation' },
-    { label: 'Suivi financier', path: '/suivi-financier' },
+    { label: 'Suivi financier', path: '/suivi-financier' , adminOnly: true },
     { label: 'Nettoyage', path: '/nettoyage' },
     { label: 'Rapports', path: '/rapports' },
     { label: 'Utilisateurs', path: '/admin/utilisateurs', adminOnly: true }
@@ -58,8 +59,17 @@ export class NavigationComponent implements OnInit, OnDestroy {
     this.authSub?.unsubscribe();
   }
 
+  toggleMenu(): void {
+    this.menuOpen = !this.menuOpen;
+  }
+
+  closeMenu(): void {
+    this.menuOpen = false;
+  }
+
   async logout(): Promise<void> {
     await this.authService.logout();
     await this.router.navigate(['/login']);
+    this.closeMenu();
   }
 }
