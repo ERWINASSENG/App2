@@ -1,7 +1,4 @@
 import { Routes } from '@angular/router';
-import { inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from './services/auth.service';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
 import { LoginComponent } from './page/login/login.component';
@@ -23,7 +20,7 @@ export const routes: Routes = [
     {
         path: 'dashboard',
         component: DashboardComponent,
-        canActivate: [AuthGuard]
+        canActivate: [AdminGuard]
     },
     {
         path: 'chargement',
@@ -71,11 +68,11 @@ export const routes: Routes = [
     },
     {
         path: '',
-        redirectTo: 'dashboard',
+        redirectTo: 'chargement',
         pathMatch: 'full'
     },
     {
         path: '**',
-        redirectTo: 'dashboard'
+        redirectTo: 'chargement'
     }
 ];
