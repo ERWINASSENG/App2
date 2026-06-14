@@ -61,6 +61,23 @@
           <span *ngIf="!loading">S'inscrire</span>
         </button>
 
+        <div style="text-align: center; margin-top: 1rem;" *ngIf="currentMode === 'register'">
+          <button
+            type="button"
+            class="google-btn"
+            (click)="loginWithGoogle()"
+            aria-label="S'inscrire avec Google"
+            title="S'inscrire avec Google"
+          >
+            <svg width="20" height="20" viewBox="0 0 533.5 544.3" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+              <path fill="#4285f4" d="M533.5 278.4c0-17.9-1.6-35.1-4.8-51.8H272v98.1h147.4c-6.4 34.6-25 63.9-53.4 83.5v69.3h86.3c50.5-46.5 79.2-115 79.2-199.1z"/>
+              <path fill="#34a853" d="M272 544.3c72.6 0 133.5-24.1 178-65.6l-86.3-69.3c-24 16.1-54.8 25.7-91.7 25.7-70.5 0-130.3-47.6-151.7-111.6H31.2v70.1C75.5 483 167 544.3 272 544.3z"/>
+              <path fill="#fbbc04" d="M120.3 327.6c-10.9-32.7-10.9-68 0-100.7V156.8H31.2c-38.4 76.9-38.4 170.2 0 247.1l89.1-76.3z"/>
+              <path fill="#ea4335" d="M272 107.7c39.4 0 74.9 13.6 102.8 40.4l77.1-77.1C401.2 24.3 340.3 0 272 0 167 0 75.5 61.3 31.2 156.8l89.1 70.1C141.7 155.3 201.5 107.7 272 107.7z"/>
+            </svg>
+          </button>
+        </div>
+
         <p class="error-message" *ngIf="errorMessage && currentMode === 'register'">{{ errorMessage }}</p>
         <p class="success-message" *ngIf="successMessage && currentMode === 'register'">{{ successMessage }}</p>
 
@@ -137,6 +154,23 @@
           <span *ngIf="!loading && currentMode === 'login'">Se connecter</span>
           <span *ngIf="!loading && currentMode === 'forgot'">Réinitialiser mon mot de passe</span>
         </button>
+
+        <div style="text-align: center; margin-top: 1rem;" *ngIf="currentMode === 'login'">
+          <button
+            type="button"
+            class="google-btn"
+            (click)="loginWithGoogle()"
+            aria-label="Se connecter avec Google"
+            title="Se connecter avec Google"
+          >
+            <svg width="20" height="20" viewBox="0 0 533.5 544.3" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+              <path fill="#4285f4" d="M533.5 278.4c0-17.9-1.6-35.1-4.8-51.8H272v98.1h147.4c-6.4 34.6-25 63.9-53.4 83.5v69.3h86.3c50.5-46.5 79.2-115 79.2-199.1z"/>
+              <path fill="#34a853" d="M272 544.3c72.6 0 133.5-24.1 178-65.6l-86.3-69.3c-24 16.1-54.8 25.7-91.7 25.7-70.5 0-130.3-47.6-151.7-111.6H31.2v70.1C75.5 483 167 544.3 272 544.3z"/>
+              <path fill="#fbbc04" d="M120.3 327.6c-10.9-32.7-10.9-68 0-100.7V156.8H31.2c-38.4 76.9-38.4 170.2 0 247.1l89.1-76.3z"/>
+              <path fill="#ea4335" d="M272 107.7c39.4 0 74.9 13.6 102.8 40.4l77.1-77.1C401.2 24.3 340.3 0 272 0 167 0 75.5 61.3 31.2 156.8l89.1 70.1C141.7 155.3 201.5 107.7 272 107.7z"/>
+            </svg>
+          </button>
+        </div>
 
         <div style="text-align: center; margin-top: 1rem;" *ngIf="currentMode === 'forgot'">
           <button 

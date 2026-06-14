@@ -161,6 +161,23 @@ export class SupabaseService {
     return this.supabase.auth.signOut();
   }
 
+  // Connexion avec Google (OAuth)
+  async signInWithGoogle() {
+    const { data, error } = await this.supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin
+      }
+    });
+
+    if (error) {
+      console.error('[SupabaseService] Erreur connexion Google:', error);
+      throw error;
+    }
+
+    return data;
+  }
+
   // Inscription avec Nom Complet
   async signUp(email: string, password: string, fullName: string) {
     const result = await this.supabase.auth.signUp({
@@ -185,11 +202,11 @@ export class SupabaseService {
         prenom: prenom,
         role: 'saisisseur',
         actif: true,
-        date_creation: new Date().toISOString()
+        created_at: new Date().toISOString()
       };
 
       try {
-        await this.supabase.from('users').insert([userProfile]);
+        await this.supabase.from('user_profiles').insert([userProfile]);
       } catch (error) {
         console.error('[SupabaseService] Error creating user profile:', error);
         // Don't throw - auth user is already created
@@ -243,6 +260,24 @@ export class SupabaseService {
     }
 
     return data || [];
+  }
+
+  // Récupérer le profil utilisateur lié à la session active
+  async getUserProfile() {
+    const { data: { user } } = await this.supabase.auth.getUser();
+    if (!user) return null;
+
+    const { data, error } = await this.supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    if (error) {
+      console.error('[SupabaseService] Erreur profil:', error);
+      return null;
+    }
+    return data;
   }
 
   // Ajouter une opération

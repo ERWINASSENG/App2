@@ -88,4 +88,23 @@ export class LoginComponent {
       this.loading = false;
     }
   }
+
+  // Social login: Google
+  loginWithGoogle(): void {
+    this.loading = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    this.supabaseService.signInWithGoogle()
+      .then(() => {
+        console.log('Connexion Google réussie');
+      })
+      .catch(err => {
+        console.error('Erreur Google login:', err);
+        this.errorMessage = err?.message || 'Erreur de connexion Google.';
+      })
+      .finally(() => {
+        this.loading = false;
+      });
+  }
 }

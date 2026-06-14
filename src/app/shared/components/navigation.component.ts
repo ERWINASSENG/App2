@@ -68,6 +68,11 @@ export class NavigationComponent implements OnInit, OnDestroy {
   }
 
   async logout(): Promise<void> {
+    const confirmed = window.confirm('Vous êtes sur le point de vous déconnecter. Voulez-vous continuer ?');
+    if (!confirmed) {
+      return;
+    }
+
     await this.authService.logout();
     await this.router.navigate(['/login']);
     this.closeMenu();
