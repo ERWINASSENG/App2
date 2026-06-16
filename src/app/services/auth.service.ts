@@ -67,22 +67,33 @@ export class AuthService {
     }
 
     if (data.user) {
-      const profile: any = {
+      // Build user record for insertion/upsert
+      const userRecord: User = {
         id: data.user.id,
-        email: data.user.email,
+        email: data.user.email || '',
         nom: userData.nom || '',
         prenom: userData.prenom || '',
-        role: userData.role || 'saisisseur',
+        role: (userData.role as UserRole) || 'saisisseur',
         site_id: userData.site_id,
         actif: true,
-        created_at: new Date().toISOString()
+        date_creation: new Date().toISOString(),
+        date_derniere_connexion: new Date().toISOString()
       };
 
+      // Insert into primary users table
+      await supabase.from('users').insert([userRecord]);
+
       try {
-        await supabase.from('user_profiles').upsert([profile], { onConflict: 'id' });
+        // Also ensure a profile exists in the user_profiles table
+        await supabase.from('user_profiles').upsert([userRecord], { onConflict: 'id' });
       } catch (insertError) {
         console.warn('[AuthService] Échec de création du profil utilisateur lors de l’inscription.', insertError);
       }
+
+      // Update local state
+      this.currentUserSubject.next(userRecord);
+      this.currentRoleSubject.next(userRecord.role);
+      this.isAuthenticatedSubject.next(true);
       return true;
     }
     return false;
@@ -98,62 +109,47 @@ export class AuthService {
 
   private async loadUserProfile(userId: string): Promise<void> {
     const supabase = this.supabaseService.getClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      console.error('[AuthService] Impossible de récupérer l’utilisateur Supabase.', null);
-      return;
-    }
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', userId)
+      .single();
 
-    const { data, error } = await supabase.from('user_profiles').select('*').eq('id', user.id).single();
+    console.log('loadUserProfile - data:', data);
+    console.log('loadUserProfile - error:', error);
 
     if (!error && data) {
-      const user = this.normalizeUserRecord(data);
+      const user: User = data;
       this.currentUserSubject.next(user);
       this.currentRoleSubject.next(user.role);
       this.isAuthenticatedSubject.next(true);
-      return;
+    } else if (error) {
+      // User not in users table, create default profile
+      const user = await supabase.auth.getUser();
+      if (user.data?.user) {
+        const newUser: User = {
+          id: user.data.user.id,
+          email: user.data.user.email || '',
+          nom: '',
+          prenom: '',
+          role: 'saisisseur',
+          actif: true,
+          date_creation: new Date().toISOString(),
+          date_derniere_connexion: new Date().toISOString()
+        };
+
+        // Insert user into users table
+        await supabase
+          .from('users')
+          .insert([newUser])
+          .select()
+          .single();
+
+        this.currentUserSubject.next(newUser);
+        this.currentRoleSubject.next(newUser.role);
+        this.isAuthenticatedSubject.next(true);
+      }
     }
-
-    if (!error && data) {
-      const userRecord = this.normalizeUserRecord(data);
-      this.currentUserSubject.next(userRecord);
-      this.currentRoleSubject.next(userRecord.role);
-      this.isAuthenticatedSubject.next(true);
-      return;
-    }
-
-    // If profile not found, create a fallback profile from auth user and upsert into user_profiles
-    const fallbackUser: User = {
-      id: user.id,
-      email: user.email || '',
-      nom: '',
-      prenom: '',
-      role: 'saisisseur',
-      actif: true,
-      date_creation: new Date().toISOString(),
-      date_derniere_connexion: new Date().toISOString()
-    };
-
-    const insertData: any = {
-      id: fallbackUser.id,
-      email: fallbackUser.email,
-      nom: fallbackUser.nom,
-      prenom: fallbackUser.prenom,
-      role: fallbackUser.role,
-      site_id: fallbackUser.site_id,
-      actif: fallbackUser.actif,
-      created_at: fallbackUser.date_creation
-    };
-
-    try {
-      await supabase.from('user_profiles').upsert([insertData], { onConflict: 'id' }).select().single();
-    } catch (insertError) {
-      console.warn('[AuthService] Échec de création du profil utilisateur.', insertError);
-    }
-
-    this.currentUserSubject.next(fallbackUser);
-    this.currentRoleSubject.next(fallbackUser.role);
-    this.isAuthenticatedSubject.next(true);
   }
 
   getCurrentUser(): User | null {
