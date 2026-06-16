@@ -39,7 +39,7 @@
   </nav>
 
   <div class="logout-wrapper" *ngIf="currentUser">
-    <button class="logout-button" type="button" (click)="logout()">
+    <button class="logout-button" type="button" (click)="logout()" title="Vous êtes sur le point de vous déconnecter">
       <span class="logout-button__user">
         <span class="logout-button__avatar">{{ avatarLabel }}</span>
         <span class="logout-button__meta">

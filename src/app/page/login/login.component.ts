@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { SupabaseService } from '../../services/supabase.service'; // Ajustez le chemin selon votre projet
+import { SupabaseService } from '../../services/supabase.service';
+import { AuthService } from '../../services/auth.service';
 
 type AuthMode = 'login' | 'register' | 'forgot';
 
@@ -28,6 +29,7 @@ export class LoginComponent {
 
   constructor(
     private supabaseService: SupabaseService,
+    private authService: AuthService,
     private router: Router
   ) {}
 
@@ -57,12 +59,12 @@ export class LoginComponent {
 
     try {
       if (this.currentMode === 'login') {
-        const { error } = await this.supabaseService.signIn(this.email, this.password);
-        if (error) throw error;
+        const success = await this.authService.login(this.email, this.password);
+        if (!success) throw new Error('Identifiants incorrects.');
 
-        localStorage.setItem('isAuthenticated', 'true');
         this.successMessage = 'Connexion réussie !';
-        this.router.navigate(['/dashboard']);
+        const redirectPath = this.authService.hasRole('admin') ? '/dashboard' : '/chargement';
+        this.router.navigate([redirectPath]);
 
       } else if (this.currentMode === 'register') {
         const { error } = await this.supabaseService.signUp(this.email, this.password, this.fullName);
@@ -85,5 +87,24 @@ export class LoginComponent {
     } finally {
       this.loading = false;
     }
+  }
+
+  // Social login: Google
+  loginWithGoogle(): void {
+    this.loading = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    this.supabaseService.signInWithGoogle()
+      .then(() => {
+        console.log('Connexion Google réussie');
+      })
+      .catch(err => {
+        console.error('Erreur Google login:', err);
+        this.errorMessage = err?.message || 'Erreur de connexion Google.';
+      })
+      .finally(() => {
+        this.loading = false;
+      });
   }
 }

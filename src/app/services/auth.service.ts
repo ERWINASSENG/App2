@@ -13,6 +13,8 @@ export class AuthService {
   private currentRoleSubject = new BehaviorSubject<UserRole | null>(null);
   currentRole$ = this.currentRoleSubject.asObservable();
 
+  private userTable?: string | null;
+
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
@@ -66,7 +68,7 @@ export class AuthService {
 
     if (data.user) {
       // Create user profile
-      await supabase.from('user_profiles').insert({
+      await supabase.from('users').insert({
         id: data.user.id,
         email: data.user.email,
         nom: userData.nom || '',
@@ -74,8 +76,14 @@ export class AuthService {
         role: userData.role || 'saisisseur',
         site_id: userData.site_id,
         actif: true,
-        date_creation: new Date().toISOString()
-      });
+        created_at: new Date().toISOString()
+      };
+
+      try {
+        await supabase.from('user_profiles').upsert([profile], { onConflict: 'id' });
+      } catch (insertError) {
+        console.warn('[AuthService] Échec de création du profil utilisateur lors de l’inscription.', insertError);
+      }
       return true;
     }
     return false;
@@ -92,7 +100,7 @@ export class AuthService {
   private async loadUserProfile(userId: string): Promise<void> {
     const supabase = this.supabaseService.getClient();
     const { data, error } = await supabase
-      .from('user_profiles')
+      .from('users')
       .select('*')
       .eq('id', userId)
       .single();
@@ -102,14 +110,11 @@ export class AuthService {
 
     if (!error && data) {
       const user: User = data;
-      console.log('User loaded from DB:', user);
-      console.log('All user data keys:', Object.keys(user));
-      console.log('Full user object:', JSON.stringify(user, null, 2));
       this.currentUserSubject.next(user);
       this.currentRoleSubject.next(user.role);
       this.isAuthenticatedSubject.next(true);
     } else if (error) {
-      // User not in user_profiles table, create default profile
+      // User not in users table, create default profile
       const user = await supabase.auth.getUser();
       if (user.data?.user) {
         const newUser: User = {
@@ -123,9 +128,9 @@ export class AuthService {
           date_derniere_connexion: new Date().toISOString()
         };
 
-        // Insert user into user_profiles table
+        // Insert user into users table
         await supabase
-          .from('user_profiles')
+          .from('users')
           .insert([newUser])
           .select()
           .single();
@@ -172,10 +177,9 @@ export class AuthService {
 
   async updateUserRole(userId: string, newRole: UserRole): Promise<boolean> {
     const supabase = this.supabaseService.getClient();
-    const { error } = await supabase
-      .from('users')
-      .update({ role: newRole })
-      .eq('id', userId);
+    const query = supabase.from('user_profiles').update({ role: newRole }).eq('id', userId);
+
+    const { error } = await query;
 
     if (error) {
       console.error('Error updating user role:', error);
@@ -191,5 +195,49 @@ export class AuthService {
     }
 
     return true;
+  }
+
+  private async getUserTable(): Promise<string | null> {
+    if (this.userTable !== undefined) {
+      return this.userTable;
+    }
+
+    const supabase = this.supabaseService.getClient();
+    const tables = ['user_profiles', 'profiles'];
+
+    for (const table of tables) {
+      const { error } = await supabase.from(table).select('id').limit(1);
+      if (!error) {
+        this.userTable = table;
+        return table;
+      }
+      if (!this.isUsersTableMissing(error)) {
+        console.warn(`[AuthService] Erreur lors de la vérification de la table ${table}:`, error);
+        break;
+      }
+    }
+
+    this.userTable = null;
+    return null;
+  }
+
+  private normalizeUserRecord(record: any): User {
+    return {
+      id: record.id || record.user_id || '',
+      email: record.email || '',
+      nom: record.nom || '',
+      prenom: record.prenom || '',
+      role: record.role || 'saisisseur',
+      site_id: record.site_id || undefined,
+      actif: record.actif ?? true,
+      date_creation: record.date_creation || record.created_at || new Date().toISOString(),
+      date_derniere_connexion: record.date_derniere_connexion || new Date().toISOString()
+    };
+  }
+
+  private isUsersTableMissing(error: any): boolean {
+    return error?.status === 404 ||
+      error?.message?.toString().toLowerCase().includes('not found') ||
+      error?.message?.toString().toLowerCase().includes('404');
   }
 }
