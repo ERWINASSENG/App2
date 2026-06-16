@@ -66,7 +66,7 @@ export class AuthService {
 
     if (data.user) {
       // Create user profile
-      await supabase.from('users').insert({
+      await supabase.from('user_profiles').insert({
         id: data.user.id,
         email: data.user.email,
         nom: userData.nom || '',
@@ -92,18 +92,24 @@ export class AuthService {
   private async loadUserProfile(userId: string): Promise<void> {
     const supabase = this.supabaseService.getClient();
     const { data, error } = await supabase
-      .from('users')
+      .from('user_profiles')
       .select('*')
       .eq('id', userId)
       .single();
 
+    console.log('loadUserProfile - data:', data);
+    console.log('loadUserProfile - error:', error);
+
     if (!error && data) {
       const user: User = data;
+      console.log('User loaded from DB:', user);
+      console.log('All user data keys:', Object.keys(user));
+      console.log('Full user object:', JSON.stringify(user, null, 2));
       this.currentUserSubject.next(user);
       this.currentRoleSubject.next(user.role);
       this.isAuthenticatedSubject.next(true);
     } else if (error) {
-      // User not in users table, create default profile
+      // User not in user_profiles table, create default profile
       const user = await supabase.auth.getUser();
       if (user.data?.user) {
         const newUser: User = {
@@ -117,9 +123,9 @@ export class AuthService {
           date_derniere_connexion: new Date().toISOString()
         };
 
-        // Insert user into users table
+        // Insert user into user_profiles table
         await supabase
-          .from('users')
+          .from('user_profiles')
           .insert([newUser])
           .select()
           .single();

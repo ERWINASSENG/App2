@@ -3,6 +3,8 @@ export type UserRole = 'admin' | 'superviseur' | 'saisisseur' | 'lecteur';
 export interface User {
   id: string;
   email: string;
+  display_name?: string;
+  'Display name'?: string;  // Supabase column avec espace
   nom: string;
   prenom: string;
   role: UserRole;
