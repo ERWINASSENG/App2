@@ -67,23 +67,33 @@ export class AuthService {
     }
 
     if (data.user) {
-      // Create user profile
-      await supabase.from('users').insert({
+      // Build user record for insertion/upsert
+      const userRecord: User = {
         id: data.user.id,
-        email: data.user.email,
+        email: data.user.email || '',
         nom: userData.nom || '',
         prenom: userData.prenom || '',
-        role: userData.role || 'saisisseur',
+        role: (userData.role as UserRole) || 'saisisseur',
         site_id: userData.site_id,
         actif: true,
-        created_at: new Date().toISOString()
+        date_creation: new Date().toISOString(),
+        date_derniere_connexion: new Date().toISOString()
       };
 
+      // Insert into primary users table
+      await supabase.from('users').insert([userRecord]);
+
       try {
-        await supabase.from('user_profiles').upsert([profile], { onConflict: 'id' });
+        // Also ensure a profile exists in the user_profiles table
+        await supabase.from('user_profiles').upsert([userRecord], { onConflict: 'id' });
       } catch (insertError) {
         console.warn('[AuthService] Échec de création du profil utilisateur lors de l’inscription.', insertError);
       }
+
+      // Update local state
+      this.currentUserSubject.next(userRecord);
+      this.currentRoleSubject.next(userRecord.role);
+      this.isAuthenticatedSubject.next(true);
       return true;
     }
     return false;
