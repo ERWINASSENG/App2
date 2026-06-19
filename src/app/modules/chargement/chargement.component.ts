@@ -1,9 +1,14 @@
-import { Component, EventEmitter, Output, OnInit, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
-import { User } from '../../models/user.model';
+
+interface ChargementItem {
+  date: string;
+  code: string;
+  produit: string;
+  qte: number;
+  pu: number;
+}
 
 @Component({
   selector: 'app-chargement',
@@ -12,16 +17,28 @@ import { User } from '../../models/user.model';
   templateUrl: './chargement.component.html',
   styleUrls: ['./chargement.component.scss']
 })
-export class ChargementComponent implements OnInit, OnDestroy {
+export class ChargementComponent {
   @Output() newChargement = new EventEmitter<void>();
-
-  currentUser: User | null = null;
-  private userSubscription: Subscription | null = null;
 
   searchTerm: string = '';
   selectedSite: string = 'Site Principal - Dakar';
   selectedProduct: string = 'All Products';
   selectedDn: string = 'All Entries';
+
+  // État du formulaire
+  showForm: boolean = false;
+
+  // Formulaire
+  formData = {
+    date: '',
+    code: '',
+    produit: '',
+    qte: 0,
+    pu: 0
+  };
+
+  // Tableau des chargements
+  items: ChargementItem[] = [];
 
   // Tableaux de données pour peupler les listes déroulantes
   sites = [
@@ -42,57 +59,63 @@ export class ChargementComponent implements OnInit, OnDestroy {
     'DN 002'
   ];
 
-  constructor(private authService: AuthService) {}
+  onAddChargement(): void {
+    // Vérifier que tous les champs sont remplis
+    if (!this.formData.date || !this.formData.code || !this.formData.produit || !this.formData.qte || !this.formData.pu) {
+      return;
+    }
 
-  ngOnInit(): void {
-    this.userSubscription = this.authService.currentUser$.subscribe(user => {
-      this.currentUser = user;
-      console.log('Current user updated:', user);
-      if (user) {
-        console.log('User display_name:', user.display_name);
-        console.log('User nom:', user.nom);
-        console.log('User prenom:', user.prenom);
-      }
-    });
+    // Ajouter l'item au tableau
+    const newItem: ChargementItem = {
+      date: this.formData.date,
+      code: this.formData.code,
+      produit: this.formData.produit,
+      qte: Number(this.formData.qte),
+      pu: Number(this.formData.pu)
+    };
+
+    this.items.push(newItem);
+
+    // Réinitialiser le formulaire
+    this.formData = {
+      date: '',
+      code: '',
+      produit: '',
+      qte: 0,
+      pu: 0
+    };
+
+    this.newChargement.emit();
   }
 
-  ngOnDestroy(): void {
-    this.userSubscription?.unsubscribe();
+  removeItem(index: number): void {
+    this.items.splice(index, 1);
   }
 
-  getAvatarUrl(): string {
-    if (!this.currentUser) {
-      return 'https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff';
-    }
-    const firstName = this.currentUser.prenom || '';
-    const lastName = this.currentUser.nom || '';
-    const name = `${firstName}+${lastName}`.trim() || this.currentUser.email;
-    return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0D8ABC&color=fff`;
-  }
-
-  getUserDisplayName(): string {
-    if (!this.currentUser) {
-      return 'User';
-    }
-    
-    // Essayer display_name (snake_case)
-    if (this.currentUser.display_name?.trim()) {
-      return this.currentUser.display_name.trim();
-    }
-    
-    // Essayer 'Display name' (avec espace, tel que dans Supabase)
-    const displayNameWithSpace = (this.currentUser as any)['Display name'];
-    if (displayNameWithSpace?.trim()) {
-      return displayNameWithSpace.trim();
-    }
-    
-    // Sinon construire à partir de prenom et nom
-    const firstName = this.currentUser.prenom?.trim();
-    const lastName = this.currentUser.nom?.trim();
-    return (firstName && lastName) ? `${firstName} ${lastName}` : (firstName || lastName || 'User');
+  getTotalMontant(): number {
+    return this.items.reduce((total, item) => total + (item.qte * item.pu), 0);
   }
 
   onNewChargement(): void {
+    this.showForm = true;
     this.newChargement.emit();
+  }
+
+  closeForm(): void {
+    this.showForm = false;
+    // Réinitialiser le formulaire
+    this.formData = {
+      date: '',
+      code: '',
+      produit: '',
+      qte: 0,
+      pu: 0
+    };
+  }
+
+  toggleMenuFromChargement(): void {
+    // Dispatcher un événement personnalisé pour ouvrir/fermer le menu
+    const event = new CustomEvent('toggleMenu', { detail: {} });
+    window.dispatchEvent(event);
   }
 }

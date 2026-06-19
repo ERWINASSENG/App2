@@ -1,14 +1,8 @@
 ﻿<section class="chargement-page-header">
   <div class="top-bar">
     <div class="top-bar__left">
+     
       <h1>CHARGEMENT</h1>
-      
-      <div class="search-box">
-        <svg class="icon search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.602 10.602Z" />
-        </svg>
-        <input type="text" placeholder="Search by DN or Product..." [(ngModel)]="searchTerm">
-      </div>
     </div>
 
     <div class="top-bar__right">
@@ -28,10 +22,7 @@
 
       <div class="divider"></div>
 
-      <div class="user-info">
-        <img [src]="getAvatarUrl()" alt="Avatar" class="avatar">
-        <span class="username">{{ getUserDisplayName() }}</span>
-      </div>
+     
     </div>
   </div>
 
@@ -102,3 +93,77 @@
 
   </div>
 </section>
+
+<!-- Modal Overlay -->
+<div class="modal-overlay" *ngIf="showForm" (click)="closeForm()"></div>
+
+<!-- Modal Form -->
+<div class="modal-form" *ngIf="showForm">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Ajouter un chargement</h2>
+      <button type="button" class="close-btn" (click)="closeForm()" aria-label="Fermer">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <form id="chargementForm" (ngSubmit)="onAddChargement()" class="modal-body">
+      <input type="date" id="date" [(ngModel)]="formData.date" name="date" required>
+      <input type="text" id="code" [(ngModel)]="formData.code" name="code" placeholder="DN/ISTI/LTR" required>
+      <input type="text" id="produit" [(ngModel)]="formData.produit" name="produit" placeholder="Produit" required>
+      <input type="number" id="qte" [(ngModel)]="formData.qte" name="qte" placeholder="Quantité" required>
+      <input type="number" step="0.01" id="pu" [(ngModel)]="formData.pu" name="pu" placeholder="PU" required>
+      <span id="montant" class="montant-display">{{ (formData.qte * formData.pu) | number: '1.0-2' }}</span>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" (click)="closeForm()">Annuler</button>
+        <button type="submit" class="btn-submit">Ajouter</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Tableau des résultats -->
+<div class="main-content" *ngIf="items.length > 0">
+  <h2>Chargements enregistrés</h2>
+  
+  <table id="chargementTable">
+    <thead>
+      <tr>
+        <th>DATE</th>
+        <th>DN/ISTI/LTR</th>
+        <th>PRODUITS</th>
+        <th>QTE</th>
+        <th>PU</th>
+        <th>MONTANT</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of items; let i = index">
+        <td>{{ item.date | date: 'dd/MM/yyyy' }}</td>
+        <td>{{ item.code }}</td>
+        <td>{{ item.produit }}</td>
+        <td class="text-right">{{ item.qte | number: '1.0-0' }}</td>
+        <td class="text-right">{{ item.pu | number: '1.0-2' }}</td>
+        <td class="text-right">{{ (item.qte * item.pu) | number: '1.0-2' }}</td>
+        <td class="text-center">
+          <button type="button" class="btn-delete" (click)="removeItem(i)" title="Supprimer">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 2.5h-2.25m0 0h-3.75m-3.75 0h-2.25m13.5 0c.342.052.682.107 1.022.166M9.75 11.25c.342.052.682.107 1.022.166M7.5 2.5h3.75m0 0V1.125M10.5 1.125C10.5.504 11.004 0 11.625 0h.75c.621 0 1.125.504 1.125 1.125M7.5 2.5h3.75" />
+            </svg>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot *ngIf="items.length > 0">
+      <tr>
+        <td colspan="5" class="text-right"><strong>TOTAL:</strong></td>
+        <td class="text-right"><strong>{{ getTotalMontant() | number: '1.0-2' }}</strong></td>
+        <td></td>
+      </tr>
+    </tfoot>
+  </table>
+</div>

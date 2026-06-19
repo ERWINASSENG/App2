@@ -24,6 +24,12 @@ main.with-sidebar {
   }
 }
 
+@media (max-width: 768px) {
+  main {
+    padding-top: 5.25rem;
+  }
+}
+
 /* Scrollbar styling */
 main::-webkit-scrollbar {
   width: 8px;

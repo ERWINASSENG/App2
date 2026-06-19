@@ -1,4 +1,4 @@
-﻿import { Component, OnDestroy, OnInit } from '@angular/core';
+﻿import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -57,6 +57,15 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.authSub?.unsubscribe();
+  }
+
+  @HostListener('window:keydown.escape', ['$event'])
+  onEscape(event: Event): void {
+    if (!(event instanceof KeyboardEvent)) return;
+    if (this.menuOpen) {
+      event.preventDefault();
+      this.closeMenu();
+    }
   }
 
   toggleMenu(): void {
