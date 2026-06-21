@@ -36,12 +36,12 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   navItems: NavItem[] = [
     { label: 'Dashboard', path: '/dashboard', adminOnly: true },
-    { label: 'Chargement', path: '/chargement' },
-    { label: 'Transferts', path: '/transferts' },
-    { label: 'Paie', path: '/paie' , adminOnly: true },
-    { label: 'Facturation', path: '/facturation' },
-    { label: 'Suivi financier', path: '/suivi-financier' , adminOnly: true },
-    { label: 'Nettoyage', path: '/nettoyage' },
+    { label: 'OPERATIONS', path: '/operations' },
+    { label: 'TRANSFERTS', path: '/transferts' },
+    { label: 'PAIE', path: '/paie' , adminOnly: true },
+    { label: 'FACTURATION', path: '/facturation' },
+    { label: 'SUIVI FINANCIER', path: '/suivi-financier' , adminOnly: true },
+    { label: 'AUTRE OPERATIONS', path: '/autre-operations' },
     { label: 'Rapports', path: '/rapports' },
     { label: 'Utilisateurs', path: '/admin/utilisateurs', adminOnly: true }
   ];

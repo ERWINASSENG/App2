@@ -1,0 +1,169 @@
+<section class="operation-page-header">
+  <div class="top-bar">
+    <div class="top-bar__left">
+     
+      <h1>OPERATIONS</h1>
+    </div>
+
+    <div class="top-bar__right">
+      <button class="action-icon notification" aria-label="Notifications">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+        </svg>
+        <span class="badge"></span>
+      </button>
+      
+      <button class="action-icon settings" aria-label="Paramètres">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+        </svg>
+      </button>
+
+      <div class="divider"></div>
+
+     
+    </div>
+  </div>
+
+  <div class="bottom-bar">
+    <div class="filters-section">
+      <div class="filters-row">
+        
+        <div class="filter-item">
+          <label>
+            <svg class="icon location-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+            </svg>
+            Site de Chargement
+          </label>
+          <div class="select-wrapper">
+            <select [(ngModel)]="selectedSite">
+              <option *ngFor="let site of sites" [value]="site">{{ site }}</option>
+            </select>
+            <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            </svg>
+          </div>
+        </div>
+        
+        <div class="filter-item">
+          <label>Produit</label>
+          <div class="select-wrapper">
+            <select [(ngModel)]="selectedProduct">
+              <option *ngFor="let product of products" [value]="product">{{ product }}</option>
+            </select>
+            <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="filter-item">
+          <label>Filtre DN</label>
+          <div class="select-wrapper">
+            <select [(ngModel)]="selectedDn">
+              <option *ngFor="let dn of dnEntries" [value]="dn">{{ dn }}</option>
+            </select>
+            <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            </svg>
+          </div>
+        </div>
+
+        <button class="btn-compact" (click)="onNewChargement()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          Nouveau Chargement
+        </button>
+
+      </div>
+      
+      <div class="advanced-filters">
+        <a href="#" (click)="$event.preventDefault()">
+          <svg class="icon filter-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M6 12h12m-9 6h6" />
+          </svg>
+          Advanced Filters
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Modal Overlay -->
+<div class="modal-overlay" *ngIf="showForm" (click)="closeForm()"></div>
+
+<!-- Modal Form -->
+<div class="modal-form" *ngIf="showForm">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Ajouter un chargement</h2>
+      <button type="button" class="close-btn" (click)="closeForm()" aria-label="Fermer">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <form id="chargementForm" (ngSubmit)="onAddChargement()" class="modal-body">
+      <input type="date" id="date" [(ngModel)]="formData.date" name="date" required>
+      <input type="text" id="code" [(ngModel)]="formData.code" name="code" placeholder="DN/ISTI/LTR" required>
+      <input type="text" id="produit" [(ngModel)]="formData.produit" name="produit" placeholder="Produit" required>
+      <input type="number" id="qte" [(ngModel)]="formData.qte" name="qte" placeholder="Quantité" required>
+      <input type="number" step="0.01" id="pu" [(ngModel)]="formData.pu" name="pu" placeholder="PU" required>
+      <span id="montant" class="montant-display">{{ (formData.qte * formData.pu) | number: '1.0-2' }}</span>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" (click)="closeForm()">Annuler</button>
+        <button type="submit" class="btn-submit">Ajouter</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Tableau des résultats -->
+<div class="main-content" *ngIf="items.length > 0">
+  <h2>Chargements enregistrés</h2>
+  
+  <table id="chargementTable">
+    <thead>
+      <tr>
+        <th>DATE</th>
+        <th>DN/ISTI/LTR</th>
+        <th>PRODUITS</th>
+        <th>QTE</th>
+        <th>PU</th>
+        <th>MONTANT</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of items; let i = index">
+        <td>{{ item.date | date: 'dd/MM/yyyy' }}</td>
+        <td>{{ item.code }}</td>
+        <td>{{ item.produit }}</td>
+        <td class="text-right">{{ item.qte | number: '1.0-0' }}</td>
+        <td class="text-right">{{ item.pu | number: '1.0-2' }}</td>
+        <td class="text-right">{{ (item.qte * item.pu) | number: '1.0-2' }}</td>
+        <td class="text-center">
+          <button type="button" class="btn-delete" (click)="removeItem(i)" title="Supprimer">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 2.5h-2.25m0 0h-3.75m-3.75 0h-2.25m13.5 0c.342.052.682.107 1.022.166M9.75 11.25c.342.052.682.107 1.022.166M7.5 2.5h3.75m0 0V1.125M10.5 1.125C10.5.504 11.004 0 11.625 0h.75c.621 0 1.125.504 1.125 1.125M7.5 2.5h3.75" />
+            </svg>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot *ngIf="items.length > 0">
+      <tr>
+        <td colspan="5" class="text-right"><strong>TOTAL:</strong></td>
+        <td class="text-right"><strong>{{ getTotalMontant() | number: '1.0-2' }}</strong></td>
+        <td></td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
