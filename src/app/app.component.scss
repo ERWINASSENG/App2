@@ -3,6 +3,7 @@
   height: 100vh;
   background-color: #f3f4f6;
   position: relative;
+  margin-left: 250px;
 }
 
 main {
@@ -10,14 +11,23 @@ main {
   overflow-y: auto;
   overflow-x: hidden;
   width: 100%;
+  padding-top: 0;
 }
 
 main.with-sidebar {
-  margin-left: 270px;
-  width: calc(100% - 270px);
+  margin-left: 0;
+  width: 100%;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
+  .app-container {
+    margin-left: 0;
+  }
+
+  main {
+    padding-top: 64px;
+  }
+
   main.with-sidebar {
     margin-left: 0;
     width: 100%;
@@ -26,7 +36,7 @@ main.with-sidebar {
 
 @media (max-width: 768px) {
   main {
-    padding-top: 5.25rem;
+    padding-top: 64px;
   }
 }
 

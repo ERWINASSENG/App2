@@ -11,13 +11,13 @@ interface ChargementItem {
 }
 
 @Component({
-  selector: 'app-chargement',
+  selector: 'app-operation',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './chargement.component.html',
-  styleUrls: ['./chargement.component.scss']
+  templateUrl: './operation.component.html',
+  styleUrls: ['./operation.component.scss']
 })
-export class ChargementComponent {
+export class OperationComponent {
   @Output() newChargement = new EventEmitter<void>();
 
   searchTerm: string = '';

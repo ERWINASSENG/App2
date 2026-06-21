@@ -1,34 +1,14 @@
-﻿<div class="mobile-header">
-  <button
-    class="mobile-menu-toggle"
-    type="button"
-    (click)="toggleMenu()"
-    [attr.aria-expanded]="menuOpen"
-    [attr.aria-label]="menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'"
-    aria-controls="sidebar"
-  >
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path d="M4 7H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-      <path d="M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-      <path d="M4 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-    </svg>
-  </button>
-  <div class="mobile-branding">
-    <div class="sidebar-brand">GESTION</div>
-    <div class="sidebar-tag">MANUTANTION</div>
-  </div>
-</div>
-<div class="mobile-backdrop" *ngIf="menuOpen" (click)="closeMenu()"></div>
-<aside id="sidebar" class="sidebar" [class.open]="menuOpen" [attr.aria-hidden]="!menuOpen">
-  <div class="sidebar-header">
-    <div class="sidebar-brand">GESTION</div>
-    <div class="sidebar-tag">MANUTANTION</div>
-  </div>
+﻿<nav class="navbar">
+  <div class="navbar-container">
+    <!-- Logo -->
+    <div class="navbar-brand">
+      <a href="/" class="logo">
+        <span class="logo-text">GESTION</span>
+      </a>
+    </div>
 
-  <div class="sidebar-divider"></div>
-
-  <nav class="nav-section">
-    <ul class="nav-list">
+    <!-- Desktop Navigation Menu -->
+    <ul class="nav-menu">
       <ng-container *ngFor="let item of navItems">
         <li class="nav-item" *ngIf="!item.adminOnly || isAdmin">
           <a
@@ -36,25 +16,79 @@
             routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }"
             class="nav-link"
-            (click)="closeMenu()"
-            >
+          >
             {{ item.label }}
           </a>
         </li>
       </ng-container>
     </ul>
-  </nav>
 
-  <div class="logout-wrapper" *ngIf="currentUser">
-    <button class="logout-button" type="button" (click)="logout()" title="Vous êtes sur le point de vous déconnecter">
-      <span class="logout-button__user">
-        <span class="logout-button__avatar">{{ avatarLabel }}</span>
-        <span class="logout-button__meta">
-          <span class="logout-button__email">{{ currentUser.email }}</span>
-          <span class="logout-button__action">Déconnexion</span>
-        </span>
-      </span>
-      <span class="logout-button__arrow">›</span>
+    <!-- User Section -->
+    <div class="user-section" *ngIf="currentUser">
+      <div class="logout-wrapper">
+        <button class="logout-button" type="button" (click)="logout()" title="Vous êtes sur le point de vous déconnecter">
+          <span class="logout-button__user">
+            <span class="logout-button__avatar">{{ avatarLabel }}</span>
+            <span class="logout-button__meta">
+              <span class="logout-button__email">{{ currentUser.email }}</span>
+              <span class="logout-button__action">Déconnexion</span>
+            </span>
+          </span>
+          <span class="logout-button__arrow">›</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button
+      class="hamburger"
+      type="button"
+      (click)="toggleMenu()"
+      [class.active]="menuOpen"
+      [attr.aria-expanded]="menuOpen"
+      [attr.aria-label]="menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'"
+      aria-controls="mobile-menu"
+    >
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
     </button>
   </div>
-</aside>
+
+  <!-- Mobile Navigation Overlay -->
+  <div class="navbar-overlay" [class.active]="menuOpen" *ngIf="menuOpen" (click)="closeMenu()"></div>
+
+  <!-- Mobile Navigation Menu -->
+  <ul id="mobile-menu" class="nav-menu mobile" [class.active]="menuOpen">
+    <ng-container *ngFor="let item of navItems">
+      <li class="nav-item" *ngIf="!item.adminOnly || isAdmin">
+        <a
+          [routerLink]="item.path"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-link"
+          (click)="closeMenu()"
+        >
+          {{ item.label }}
+        </a>
+      </li>
+    </ng-container>
+
+    <li class="nav-divider" *ngIf="currentUser"></li>
+
+    <li class="nav-item user-profile" *ngIf="currentUser">
+      <div class="logout-wrapper">
+        <button class="logout-button" type="button" (click)="logout()" title="Vous êtes sur le point de vous déconnecter">
+          <span class="logout-button__user">
+            <span class="logout-button__avatar">{{ avatarLabel }}</span>
+            <span class="logout-button__meta">
+              <span class="logout-button__email">{{ currentUser.email }}</span>
+              <span class="logout-button__action">Déconnexion</span>
+            </span>
+          </span>
+          <span class="logout-button__arrow">›</span>
+        </button>
+      </div>
+    </li>
+  </ul>
+</nav>
