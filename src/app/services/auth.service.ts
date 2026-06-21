@@ -56,23 +56,68 @@ export class AuthService {
    */
   private initAuth() {
     const supabase = this.supabaseService.getClient();
+
+    // Écoute les changements de session pour les connexions/déconnexions futures.
     supabase.auth.onAuthStateChange((event: any, session: any) => {
       if (session?.user) {
-        // Si une session existe, indiquer que l'utilisateur est authentifié
-        // avant de charger le profil pour rendre la navigation immédiatement visible.
-        this.isAuthenticatedSubject.next(true);
-        this.loadUserProfile(session.user.id).catch(error => {
+        this.handleAuthenticatedUser(session.user).catch(error => {
           if (!environment.production) {
-            console.error('[AuthService] loadUserProfile failed:', error);
+            console.error('[AuthService] handleAuthenticatedUser failed:', error);
           }
         });
       } else {
-        // Sinon, réinitialiser l'état d'authentification
-        this.currentUserSubject.next(null);
-        this.currentRoleSubject.next(null);
-        this.isAuthenticatedSubject.next(false);
+        this.resetAuthState();
       }
     });
+
+    // Tenter immédiatement de récupérer la session existante pour rendre l'état disponible le plus vite possible.
+    this.syncInitialSession().catch(error => {
+      if (!environment.production) {
+        console.error('[AuthService] syncInitialSession failed:', error);
+      }
+    });
+  }
+
+  private async syncInitialSession(): Promise<void> {
+    const supabase = this.supabaseService.getClient();
+    const { data } = await supabase.auth.getSession();
+
+    if (data?.session?.user) {
+      await this.handleAuthenticatedUser(data.session.user);
+    } else {
+      this.resetAuthState();
+    }
+  }
+
+  private async handleAuthenticatedUser(user: any): Promise<void> {
+    const userId = user?.id;
+    if (!userId) {
+      this.resetAuthState();
+      return;
+    }
+
+    if (this.currentUserSubject.value?.id === userId && this.isAuthenticatedSubject.value) {
+      return;
+    }
+
+    this.isAuthenticatedSubject.next(true);
+    this.currentUserSubject.next({
+      id: userId,
+      email: user.email || '',
+      nom: '',
+      prenom: '',
+      role: 'lecteur',
+      actif: true,
+      date_creation: new Date().toISOString(),
+    });
+
+    await this.loadUserProfile(userId);
+  }
+
+  private resetAuthState(): void {
+    this.currentUserSubject.next(null);
+    this.currentRoleSubject.next(null);
+    this.isAuthenticatedSubject.next(false);
   }
 
   /**
