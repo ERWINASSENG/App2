@@ -48,8 +48,11 @@ export class UsersManagementComponent implements OnInit {
   async loadData(): Promise<void> {
     this.loading = true;
     try {
-      // TODO: Charger la liste des utilisateurs depuis la BDD
-      this.sites = await this.operationService.getSites();
+      // Charger la liste des utilisateurs et des sites depuis la BDD
+      [this.users, this.sites] = await Promise.all([
+        this.authService.getUsers(),
+        this.operationService.getSites()
+      ]);
       this.error = '';
     } catch (err) {
       this.error = 'Erreur lors du chargement';

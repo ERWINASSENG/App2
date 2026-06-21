@@ -58,8 +58,14 @@ export class AuthService {
     const supabase = this.supabaseService.getClient();
     supabase.auth.onAuthStateChange((event: any, session: any) => {
       if (session?.user) {
-        // Si une session existe, charger le profil utilisateur
-        this.loadUserProfile(session.user.id);
+        // Si une session existe, indiquer que l'utilisateur est authentifié
+        // avant de charger le profil pour rendre la navigation immédiatement visible.
+        this.isAuthenticatedSubject.next(true);
+        this.loadUserProfile(session.user.id).catch(error => {
+          if (!environment.production) {
+            console.error('[AuthService] loadUserProfile failed:', error);
+          }
+        });
       } else {
         // Sinon, réinitialiser l'état d'authentification
         this.currentUserSubject.next(null);
@@ -110,9 +116,11 @@ export class AuthService {
    * Crée un utilisateur (Admin uniquement)
    * 
    * SÉCURITÉ - FAILLE #7 CORRIGÉE:
-   * - Le rôle est TOUJOURS défini côté backend
+   * - Le rôle est TOUJOURS défini côté backend (jamais côté client)
    * - JAMAIS accepter userData.role du frontend
    * - Le rôle par défaut est 'saisisseur'
+   * - La création d'auth Supabase se fait via Edge Function (service_role protégée)
+   * - JAMAIS utiliser supabase.auth.admin côté client (API serveur)
    * 
    * @param email - Email de l'utilisateur
    * @param tempPassword - Mot de passe temporaire
@@ -125,43 +133,27 @@ export class AuthService {
       // SÉCURITÉ: Forcer le rôle par défaut, jamais userData.role
       const defaultRole: UserRole = 'saisisseur';
       
-      // Créer le compte d'authentification Supabase
-      const { data, error: authError } = await supabase.auth.admin.createUser({
-        email: email,
-        password: tempPassword,
-        email_confirm: false
+      // Appeler l'Edge Function côté serveur pour créer l'utilisateur auth
+      // La clé service_role n'existe QUE côté serveur, jamais côté navigateur
+      const { data, error } = await supabase.functions.invoke('create-user', {
+        body: {
+          email: email,
+          password: tempPassword,
+          nom: userData.nom || '',
+          prenom: userData.prenom || '',
+          site_id: userData.site_id || null,
+          role: defaultRole  // Le rôle est toujours défini côté serveur
+        }
       });
 
-      if (authError || !data.user) {
-        console.error('[AuthService] Erreur création utilisateur:', authError);
+      if (error) {
+        console.error('[AuthService] Erreur création utilisateur:', error);
         return false;
       }
 
-      // Créer le profil utilisateur avec le rôle par défaut
-      const userRecord: User = {
-        id: data.user.id,
-        email: email,
-        nom: userData.nom || '',
-        prenom: userData.prenom || '',
-        role: defaultRole,  // TOUJOURS saisisseur
-        site_id: userData.site_id,
-        actif: true,
-        date_creation: new Date().toISOString(),
-        date_derniere_connexion: new Date().toISOString()
-      };
-
-      // Insérer dans la table users
-      const { error: userError } = await supabase.from('users').insert([userRecord]);
-      if (userError) {
-        console.error('[AuthService] Erreur création profil:', userError);
+      if (!data?.userId) {
+        console.error('[AuthService] Edge Function: userId non retourné');
         return false;
-      }
-
-      // Essayer de mettre à jour user_profiles si applicable
-      try {
-        await supabase.from('user_profiles').upsert([userRecord], { onConflict: 'id' });
-      } catch (err) {
-        console.warn('[AuthService] Echec user_profiles:', err);
       }
 
       return true;
@@ -331,6 +323,31 @@ export class AuthService {
     }
 
     return true;
+  }
+
+  /**
+   * Récupère la liste de tous les utilisateurs
+   * 
+   * @returns Array of User objects, or empty array if error
+   */
+  async getUsers(): Promise<User[]> {
+    const supabase = this.supabaseService.getClient();
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .order('date_creation', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching users:', error);
+        return [];
+      }
+
+      return data || [];
+    } catch (err) {
+      console.error('Error in getUsers:', err);
+      return [];
+    }
   }
 
   /**
