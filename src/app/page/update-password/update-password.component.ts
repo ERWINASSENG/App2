@@ -43,8 +43,13 @@ export class UpdatePasswordComponent implements OnInit {
       return;
     }
 
-    if (this.newPassword.length < 6) {
-      this.errorMessage = 'Le mot de passe doit avoir au moins 6 caractères.';
+    if (this.newPassword.length < 10) {
+      this.errorMessage = 'Le mot de passe doit avoir au moins 10 caractères.';
+      return;
+    }
+
+    if (!/[A-Z]/.test(this.newPassword) || !/[a-z]/.test(this.newPassword) || !/[0-9]/.test(this.newPassword)) {
+      this.errorMessage = 'Le mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre.';
       return;
     }
 

@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
+import { RoleGuard } from './guards/role.guard';
 import { LoginComponent } from './page/login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { OperationComponent } from './modules/operation/operation.component';
@@ -49,25 +50,28 @@ export const routes: Routes = [
         canActivate: [AuthGuard]
     },
     
-    // Module Paie - Accessible aux utilisateurs authentifiés
+    // Module Paie - Réservé admin/superviseur (données sensibles)
     {
         path: 'paie',
         component: PaieComponent,
-        canActivate: [AuthGuard]
+        canActivate: [RoleGuard],
+        data: { roles: ['admin', 'superviseur'] }
     },
     
-    // Module Facturation - Accessible aux utilisateurs authentifiés
+    // Module Facturation - Réservé admin/superviseur (données sensibles)
     {
         path: 'facturation',
         component: FacturationComponent,
-        canActivate: [AuthGuard]
+        canActivate: [RoleGuard],
+        data: { roles: ['admin', 'superviseur'] }
     },
     
-    // Module Suivi Financier - Accessible aux utilisateurs authentifiés
+    // Module Suivi Financier - Réservé admin/superviseur (données sensibles)
     {
         path: 'suivi-financier',
         component: SuiviFinancierComponent,
-        canActivate: [AuthGuard]
+        canActivate: [RoleGuard],
+        data: { roles: ['admin', 'superviseur'] }
     },
     
     // Module Autre Operations - Accessible aux utilisateurs authentifiés
@@ -77,11 +81,12 @@ export const routes: Routes = [
         canActivate: [AuthGuard]
     },
     
-    // Module Rapports - Accessible aux utilisateurs authentifiés
+    // Module Rapports - Réservé admin/superviseur (synthèses financières/opérationnelles)
     {
         path: 'rapports',
         component: RapportsComponent,
-        canActivate: [AuthGuard]
+        canActivate: [RoleGuard],
+        data: { roles: ['admin', 'superviseur'] }
     },
     
     // Gestion des Utilisateurs - Accessible uniquement aux administrateurs
@@ -95,6 +100,12 @@ export const routes: Routes = [
     {
         path: 'update-password',
         loadComponent: () => import('./page/update-password/update-password.component').then(m => m.UpdatePasswordComponent)
+    },
+
+    // Accès refusé - Affichée par AdminGuard / RoleGuard quand le rôle est insuffisant
+    {
+        path: 'unauthorized',
+        loadComponent: () => import('./page/unauthorized/unauthorized.component').then(m => m.UnauthorizedComponent)
     },
     
     // Route par défaut - Redirige vers le module operations

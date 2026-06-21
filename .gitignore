@@ -43,3 +43,7 @@ Thumbs.db
 
 # Backend local database
 backend/src/data/db.json
+
+# Fichier généré par scripts/generate-env.js à partir des variables d'env
+# (ne doit pas être committé — voir src/environments/environment.example.ts)
+src/environments/environment.prod.ts

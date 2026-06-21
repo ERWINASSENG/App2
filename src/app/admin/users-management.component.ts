@@ -20,6 +20,7 @@ export class UsersManagementComponent implements OnInit {
   loading = false;
   error = '';
   successMessage = '';
+  generatedPassword = '';
   roles: UserRole[] = ['admin', 'superviseur', 'saisisseur', 'lecteur'];
 
   constructor(
@@ -48,8 +49,12 @@ export class UsersManagementComponent implements OnInit {
   async loadData(): Promise<void> {
     this.loading = true;
     try {
-      // TODO: Charger la liste des utilisateurs depuis la BDD
       this.sites = await this.operationService.getSites();
+      const getUsersFn = (this.authService as any).getUsers;
+      if (typeof getUsersFn !== 'function') {
+        throw new Error('AuthService.getUsers method unavailable');
+      }
+      this.users = await getUsersFn.call(this.authService);
       this.error = '';
     } catch (err) {
       this.error = 'Erreur lors du chargement';
@@ -59,6 +64,11 @@ export class UsersManagementComponent implements OnInit {
     }
   }
 
+  private generateRandomPassword(length: number = 10): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+    return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  }
+
   async submitForm(): Promise<void> {
     if (!this.userForm.valid) {
       this.error = 'Veuillez remplir tous les champs obligatoires';
@@ -66,20 +76,23 @@ export class UsersManagementComponent implements OnInit {
     }
 
     this.loading = true;
+    this.generatedPassword = '';
     try {
       const formValue = this.userForm.value;
-      const success = await this.authService.register(
+      const tempPassword = this.generateRandomPassword();
+
+      const success = await this.authService.createUserAsAdmin(
         formValue.email,
-        'TempPassword123!', // TODO: Générer un mot de passe temporaire
+        tempPassword,
         formValue
       );
 
       if (success) {
-        this.successMessage = 'Utilisateur créé avec succès';
+        this.generatedPassword = tempPassword;
+        this.successMessage = 'Utilisateur créé avec succès. Communiquez le mot de passe temporaire ci-dessous à l\'utilisateur par un canal sécurisé.';
         this.showForm = false;
         this.initializeForm();
         await this.loadData();
-        setTimeout(() => this.successMessage = '', 3000);
       } else {
         this.error = 'Erreur lors de la création de l\'utilisateur';
       }

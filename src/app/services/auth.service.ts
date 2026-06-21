@@ -150,18 +150,11 @@ export class AuthService {
         date_derniere_connexion: new Date().toISOString()
       };
 
-      // Insérer dans la table users
-      const { error: userError } = await supabase.from('users').insert([userRecord]);
+      // Insérer dans la table user_profiles (table source de vérité)
+      const { error: userError } = await supabase.from('user_profiles').insert([userRecord]);
       if (userError) {
         console.error('[AuthService] Erreur création profil:', userError);
         return false;
-      }
-
-      // Essayer de mettre à jour user_profiles si applicable
-      try {
-        await supabase.from('user_profiles').upsert([userRecord], { onConflict: 'id' });
-      } catch (err) {
-        console.warn('[AuthService] Echec user_profiles:', err);
       }
 
       return true;
@@ -193,7 +186,7 @@ export class AuthService {
   private async loadUserProfile(userId: string): Promise<void> {
     const supabase = this.supabaseService.getClient();
     const { data, error } = await supabase
-      .from('users')
+      .from('user_profiles')
       .select('*')
       .eq('id', userId)
       .single();
@@ -225,9 +218,9 @@ export class AuthService {
           date_derniere_connexion: new Date().toISOString()
         };
 
-        // Insérer le nouvel utilisateur
+        // Insérer le nouvel utilisateur dans user_profiles
         await supabase
-          .from('users')
+          .from('user_profiles')
           .insert([newUser])
           .select()
           .single();

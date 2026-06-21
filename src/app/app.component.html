@@ -1,6 +1,12 @@
-﻿<div class="app-container">
+﻿<div class="app-container" *ngIf="authResolved; else authLoading">
   <app-navigation *ngIf="isLoggedIn"></app-navigation>
   <main [class.with-sidebar]="isLoggedIn">
     <router-outlet></router-outlet>
   </main>
 </div>
+
+<ng-template #authLoading>
+  <div class="app-loading">
+    <div class="app-loading__spinner"></div>
+  </div>
+</ng-template>
