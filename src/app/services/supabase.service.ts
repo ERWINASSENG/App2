@@ -175,8 +175,10 @@ export class SupabaseService {
     const supabaseUrl = environment.supabaseUrl;
     const supabaseKey = environment.supabaseKey;
 
-    console.log('[SupabaseService] supabaseUrl:', supabaseUrl);
-    console.log('[SupabaseService] supabaseKey present:', Boolean(supabaseKey));
+    if (!environment.production) {
+      console.log('[SupabaseService] supabaseUrl:', supabaseUrl);
+      console.log('[SupabaseService] supabaseKey present:', Boolean(supabaseKey));
+    }
 
     // Valider l'URL Supabase
     if (!this.isValidSupabaseUrl(supabaseUrl)) {
@@ -363,7 +365,9 @@ export class SupabaseService {
    */
   resetPassword(email: string) {
     const redirectTo = environment.resetPasswordRedirectUrl;
-    console.log('[SupabaseService] resetPassword redirectTo:', redirectTo);
+    if (!environment.production) {
+      console.log('[SupabaseService] resetPassword redirectTo:', redirectTo);
+    }
 
     return this.supabase.auth.resetPasswordForEmail(email, {
       redirectTo,

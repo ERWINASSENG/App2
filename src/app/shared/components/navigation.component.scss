@@ -163,65 +163,19 @@ $transition-speed: 0.3s ease-in-out;
 }
 
 .user-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px;
-  background-color: rgba($color-accent, 0.08);
-  border-radius: 6px;
-  color: $color-text;
-  font-size: 14px;
-  font-weight: 500;
-  justify-content: center;
-  flex-wrap: wrap;
+  display: none;
 }
 
 .user-avatar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  background: linear-gradient(135deg, $color-accent 0%, $color-accent-light 100%);
-  border-radius: 50%;
-  color: white;
-  font-weight: 600;
-  font-size: 12px;
+  display: none;
 }
 
 .user-name {
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-align: center;
-  font-size: 13px;
+  display: none;
 }
 
 .logout-btn {
-  color: $color-danger;
-  padding: 10px 20px;
-  border-radius: 6px;
-  width: 100%;
-  justify-content: center;
-
-  &:hover {
-    color: white;
-    background-color: $color-danger !important;
-
-    &::after {
-      display: none !important;
-    }
-  }
-
-  &.active {
-    background-color: transparent !important;
-    color: $color-danger;
-
-    &::after {
-      display: none !important;
-    }
-  }
+  display: none;
 }
 
 // Logout Wrapper & Button (Desktop)
@@ -619,6 +573,7 @@ $transition-speed: 0.3s ease-in-out;
     padding: 0 15px;
   }
 
+  // Tablet styles - removed unused logout-wrapper padding for mobile
   .user-section {
     margin-left: auto;
     gap: 8px;

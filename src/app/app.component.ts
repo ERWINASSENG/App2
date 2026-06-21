@@ -27,6 +27,11 @@ export class AppComponent implements OnInit {
   
   // Flag indiquant si l'utilisateur est connecté
   isLoggedIn = false;
+
+  // Flag indiquant si l'état d'authentification initial a été résolu.
+  // Évite d'afficher le contenu de la page avant de savoir si la navbar
+  // doit apparaître (sinon la navbar "saute" après le reste au refresh).
+  authResolved = false;
   
   // Chemin actuel de l'application
   currentPath = '';
@@ -50,6 +55,7 @@ export class AppComponent implements OnInit {
     // S'abonner aux changements d'état d'authentification
     this.authService.isAuthenticated$.subscribe(isLoggedIn => {
       this.isLoggedIn = isLoggedIn;
+      this.authResolved = true;
     });
 
     // Suivre les changements de route pour mettre à jour le chemin actuel

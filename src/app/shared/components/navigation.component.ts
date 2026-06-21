@@ -1,4 +1,4 @@
-﻿import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+﻿import { Component, HostListener, OnDestroy, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -16,7 +16,8 @@ interface NavItem {
   standalone: true,
   imports: [CommonModule, RouterModule, RouterLink, RouterLinkActive],
   templateUrl: './navigation.component.html',
-  styleUrls: ['./navigation.component.scss']
+  styleUrls: ['./navigation.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavigationComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
@@ -46,12 +47,13 @@ export class NavigationComponent implements OnInit, OnDestroy {
     { label: 'Utilisateurs', path: '/admin/utilisateurs', adminOnly: true }
   ];
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.authSub = this.authService.currentUser$.subscribe(user => {
       this.currentUser = user;
       this.isAdmin = this.authService.hasRole('admin');
+      this.cdr.markForCheck();
     });
   }
 
@@ -82,8 +84,8 @@ export class NavigationComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.closeMenu();
     await this.authService.logout();
     await this.router.navigate(['/login']);
-    this.closeMenu();
   }
 }
